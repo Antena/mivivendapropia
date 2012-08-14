@@ -19,7 +19,7 @@ var Model = Class.extend({
         this.hh_size_rec = 0;
 
         this.age_head = 40;
-        this.no_spouse = false;
+        this.no_spouse = true;
         this.primary1=0;
         this.secondary1=0;
         this.superior=0;
@@ -62,7 +62,7 @@ var Model = Class.extend({
             if (member.spouse) {
                 this.age_spouse = member.age;
                 this._spouseIndex = i;
-                this.no_spouse = true;
+                this.no_spouse = false;
                 this.primary_s1 = member.education == 1;
                 this.secondary_s1 = member.education == 2;
                 this.superior_s = member.education == 3;
