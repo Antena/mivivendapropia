@@ -179,6 +179,7 @@ var Model = Class.extend({
             ageInput.keydown(function() {
                 var index = $(this).parent().parent().attr("data-index");
                 var age = parseInt($(this).attr("value"));
+                $(this).attr("value", age);
                 self.family[index].age = age;
                 self.update();
             });
