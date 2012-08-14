@@ -26,7 +26,11 @@
     <div id="graph"></div>
     <div id="info">
         <h3>Mi grupo familiar</h3>
-        <table id="family" class="table table-striped">
+        <p>
+            Arme su propio grupo familiar.<br/>
+            Marque con <i class="icon-user"></i> al jefe de familia y con <i class="icon-heart"></i> al cónyuge (de haberlo).
+        </p>
+        <table id="family" class="table  table-striped table-condensed">
             <thead>
             <tr>
                 <th style="width: 7px;">#</th>
@@ -41,7 +45,7 @@
     </div>
 
     <div id="variables">
-        <table class="table" style="width: 50%; margin: 0 auto;">
+        <table class="table table-striped table-bordered table-condensed" style="width: 50%; margin: 0 auto;">
             <thead>
             <tr>
                 <th style="width: 50%">Variable</th>
@@ -66,8 +70,32 @@
                 <td class="age_head">45</td>
             </tr>
             <tr>
+                <td>primary1</td>
+                <td class="primary1">0</td>
+            </tr>
+            <tr>
+                <td>secondary1</td>
+                <td class="secondary1">1</td>
+            </tr>
+            <tr>
+                <td>superior</td>
+                <td class="superior">0</td>
+            </tr>
+            <tr>
                 <td>age_spouse</td>
                 <td class="age_spouse">40</td>
+            </tr>
+            <tr>
+                <td>primary_s1</td>
+                <td class="primary_s1">0</td>
+            </tr>
+            <tr>
+                <td>secondary_s1</td>
+                <td class="secondary_s1">1</td>
+            </tr>
+            <tr>
+                <td>superior_s</td>
+                <td class="superior_s">0</td>
             </tr>
             <tr>
                 <td>dependency</td>
@@ -86,9 +114,7 @@
 <script src="/assets/js/jquery-inheritance.js"></script>
 <script src="/assets/js/d3.v2.min.js"></script>
 <script src="/assets/js/less-1.3.0.min.js"></script>
-
 <script src="/assets/js/Model.js"></script>
-<script src="/assets/js/familyBuilder.js"></script>
 
 
 <script type="text/javascript">

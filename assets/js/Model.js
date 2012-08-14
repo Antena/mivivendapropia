@@ -6,6 +6,8 @@ var Model = Class.extend({
         this.family = family;
         this.table = $("#"+familyTableId);
 
+        this.education_max = 3;
+
         this.resetVars();
         this.update();
         this.drawTable();
@@ -15,10 +17,20 @@ var Model = Class.extend({
     resetVars : function() {
         this.kids_under = 0;
         this.hh_size_rec = 0;
-        this.dependency = 1;
+
         this.age_head = 40;
+        this.no_spouse = false;
+        this.primary1=0;
+        this.secondary1=0;
+        this.superior=0;
+
         this.age_spouse = 30;
-        this.no_spouse = true;
+        this.primary_s1=0;
+        this.secondary_s1=0;
+        this.superior_s=0;
+
+        this.dependency = 1;
+
         this._non_working_age = 0;
         this._headIndex = null;
         this._spouseIndex = null;
@@ -41,13 +53,19 @@ var Model = Class.extend({
             if (member.head) {
                 this.age_head = member.age;
                 this._headIndex = i;
+                this.primary1 = member.education == 1;
+                this.secondary1 = member.education == 2;
+                this.superior = member.education == 3;
             }
 
             // age_spouse
             if (member.spouse) {
                 this.age_spouse = member.age;
-                this.no_spouse = false;
                 this._spouseIndex = i;
+                this.no_spouse = true;
+                this.primary_s1 = member.education == 1;
+                this.secondary_s1 = member.education == 2;
+                this.superior_s = member.education == 3;
             }
 
             // non_working_age
@@ -92,12 +110,15 @@ var Model = Class.extend({
             return false;
         }
 
-        if (!this.no_spouse) {
+        if (this._spouseIndex != null) {
             var spouse = this.table.find("tbody i.icon-heart.selected");
             spouse.removeClass("selected");
             spouse.addClass("icon-white");
             this.family[this._spouseIndex].spouse = false;
         }
+
+        console.log("this._spouseIndex= " + this._spouseIndex);     //TODO(gb): Remove trace!!!
+        console.log("index= " + index);     //TODO(gb): Remove trace!!!
 
         if (this._spouseIndex != index) {
             $(elem).removeClass("icon-white");
@@ -128,8 +149,16 @@ var Model = Class.extend({
 
             // education
             var educationCell = $('<td class="educationCell"></td>');
-            var bookIcon = $('<i class="icon-book icon-white"></i><i class="icon-book icon-white"></i><i class="icon-book icon-white"></i>');
-            educationCell.append(bookIcon);
+            for (var j=0; j<this.education_max; j++) {
+                var bookIcon = $('<i class="icon-book" data-index="' + j +'"></i>');
+                if ( j >= member.education) {
+                    bookIcon.addClass('icon-white');
+                } else {
+                    bookIcon.addClass('selected');
+                }
+
+                educationCell.append(bookIcon);
+            }
             row.append(educationCell);
 
             // icons
@@ -241,7 +270,13 @@ var Model = Class.extend({
         $("#variables td.hh_size_rec").text(this.hh_size_rec);
         $("#variables td.no_spouse").text(this.no_spouse + 0);
         $("#variables td.age_head").text(this.age_head);
+        $("#variables td.primary1").text(this.primary1 + 0);
+        $("#variables td.secondary1").text(this.secondary1 + 0);
+        $("#variables td.superior").text(this.superior + 0);
         $("#variables td.age_spouse").text(this.age_spouse);
+        $("#variables td.primary_s1").text(this.primary_s1 + 0);
+        $("#variables td.secondary_s1").text(this.secondary_s1 + 0);
+        $("#variables td.superior_s").text(this.superior_s + 0);
         $("#variables td.dependency").text(this.dependency);
     }
 });
