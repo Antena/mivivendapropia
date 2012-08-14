@@ -80,6 +80,22 @@ var Model = Class.extend({
         this.show();
     },
 
+    setEducation: function(index, value) {
+
+        this.family[index].education = value;
+        var cell = this.table.find('tr[data-index='+index+'] td.educationCell');
+        cell.attr("data-education", value);
+        var books = cell.find("i");
+        for (var i=0; i<books.length; i++) {
+            if ($(books[i]).attr("data-index") < value) {
+                $(books[i]).addClass("selected").removeClass("icon-white");
+            } else {
+                $(books[i]).removeClass("selected").addClass("icon-white");
+            }
+        }
+        this.update();
+    },
+
     deleteMember : function(index) {
         if (this.family.length == 2 && this._headIndex == index || this.family.length == 1 && this._spouseIndex == null) {
             return false;
@@ -170,7 +186,7 @@ var Model = Class.extend({
             row.append(ageCell);
 
             // education
-            var educationCell = $('<td class="educationCell"></td>');
+            var educationCell = $('<td class="educationCell" data-education="'+member.education+'"></td>');
             for (var j=0; j<this.education_max; j++) {
                 var bookIcon = $('<i class="icon-book" data-index="' + j +'"></i>');
                 if ( j >= member.education) {
@@ -179,8 +195,50 @@ var Model = Class.extend({
                     bookIcon.addClass('selected');
                 }
 
+                bookIcon.hover(function() {
+                    var hoverIndex = $(this).attr("data-index");
+                    var cell = $(this).parent();
+                    cell.find("i.icon-book").each(function(index, elem) {
+                        if ($(elem).attr("data-index") <= hoverIndex) {
+                            $(elem).removeClass('icon-white').addClass("hover");
+                        } else {
+                            $(elem).addClass('icon-white').removeClass("hover");
+                        }
+                    });
+                }, function() {
+                    var cell = $(this).parent();
+                    if ($(this).attr("data-index") == 0) {
+                        $(this).removeClass('hover').addClass('icon-white');
+                    }
+                });
+
+                bookIcon.click(function(event) {
+                    var level = parseInt($(this).attr("data-index")) + 1;
+                    var memberIndex = $(this).parent().parent().attr("data-index");
+
+                    self.setEducation(memberIndex, level);
+                    event.stopPropagation();
+                });
                 educationCell.append(bookIcon);
             }
+            educationCell.click(function(event) {
+                var level = 0;
+                var memberIndex = $(this).parent().attr("data-index");
+
+                self.setEducation(memberIndex, level);
+            });
+
+            educationCell.hover(function(){}, function() {
+                var cell = $(this);
+                $(this).find("i.icon-book").each(function(index, elem) {
+                    var education = cell.attr("data-education");
+                    if ($(elem).attr("data-index") < education) {
+                        $(elem).removeClass('icon-white').addClass("selected");
+                    } else {
+                        $(elem).addClass('icon-white');
+                    }
+                });
+            });
             row.append(educationCell);
 
             // icons
