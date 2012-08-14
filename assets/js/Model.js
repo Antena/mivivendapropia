@@ -81,9 +81,15 @@ var Model = Class.extend({
     },
 
     deleteMember : function(index) {
+        if (this.family.length == 2 && this._headIndex == index || this.family.length == 1 && this._spouseIndex == null) {
+            return false;
+        }
+
         this.family.splice(index, 1);
         if (this._headIndex == index && this.family.length > 0) {
-            this.setHead(0);
+            var newHeadIndex = this._spouseIndex == 0 ? 1 : 0;
+            this._headIndex = newHeadIndex;
+            this.setHead(newHeadIndex);
         }
 
         this.update();
@@ -112,12 +118,11 @@ var Model = Class.extend({
         head.addClass("icon-white");
         this.family[this._headIndex].head = false;
 
+
         $(elem).removeClass("icon-white");
         $(elem).addClass("selected");
         this.family[index].head = true;
         this._headIndex = index;
-
-        this.update();
     },
 
     setSpouse: function(index, elem) {
@@ -132,17 +137,12 @@ var Model = Class.extend({
             this.family[this._spouseIndex].spouse = false;
         }
 
-        console.log("this._spouseIndex= " + this._spouseIndex);     //TODO(gb): Remove trace!!!
-        console.log("index= " + index);     //TODO(gb): Remove trace!!!
-
         if (this._spouseIndex != index) {
             $(elem).removeClass("icon-white");
             $(elem).addClass("selected");
             this.family[index].spouse = true;
             this._spouseIndex = index;
         }
-
-        this.update();
     },
 
     drawTable : function() {
@@ -159,7 +159,14 @@ var Model = Class.extend({
 
             // age
             var ageCell = $('<td class="ageCell"></td>');
-            ageCell.append(member.age);
+            var ageInput = $('<input type="text" value="'+member.age+'">');
+            ageInput.keydown(function() {
+                var index = $(this).parent().parent().attr("data-index");
+                var age = parseInt($(this).attr("value"));
+                self.family[index].age = age;
+                self.update();
+            });
+            ageCell.append(ageInput);
             row.append(ageCell);
 
             // education
@@ -193,6 +200,7 @@ var Model = Class.extend({
             headIcon.click(function() {
                 var index = $(this).parent().parent().attr("data-index");
                 self.setHead(index, this);
+                self.update();
             });
             spouseIcon.hover(function() {
                     $(this).removeClass("icon-white");
@@ -205,6 +213,7 @@ var Model = Class.extend({
             spouseIcon.click(function() {
                 var index = $(this).parent().parent().attr("data-index");
                 self.setSpouse(index, this);
+                self.update();
             });
             var deleteLink = $('<a class="deleteMember" href="#"><i class="icon-minus-sign"></i></a>');
             deleteLink.click(function() {
