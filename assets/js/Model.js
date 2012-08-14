@@ -82,7 +82,22 @@ var Model = Class.extend({
 
     deleteMember : function(index) {
         this.family.splice(index, 1);
+        if (this._headIndex == index && this.family.length > 0) {
+            this.setHead(0);
+        }
 
+        this.update();
+        this.drawTable();
+    },
+
+    addMember : function() {
+        var self = this;
+        this.family.push({
+            age:30,
+            education:2,
+            head:self._headIndex == null,
+            spouse:false
+        });
         this.update();
         this.drawTable();
     },
@@ -191,7 +206,7 @@ var Model = Class.extend({
                 var index = $(this).parent().parent().attr("data-index");
                 self.setSpouse(index, this);
             });
-            var deleteLink = $('<a class="btn btn-inverse btn-mini deleteMember" href="#"><i class="icon-trash icon-white"></i></a>');
+            var deleteLink = $('<a class="deleteMember" href="#"><i class="icon-minus-sign"></i></a>');
             deleteLink.click(function() {
                 var index = $(this).parent().parent().attr("data-index");
                 self.deleteMember(index);
