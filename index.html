@@ -9,7 +9,6 @@
 
     <!-- Le styles -->
     <link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/bootstrap-responsive.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/style.less" rel="stylesheet/less" type="text/css">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -22,28 +21,105 @@
 </head>
 
 <body>
-<div class="container">
-    <h1>Bootstrap starter template</h1>
-    <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
-</div> <!-- /container -->
+
+<div id="content">
+    <div id="graph"></div>
+    <div id="info">
+        <h3>Mi grupo familiar</h3>
+        <table id="family" class="table table-striped">
+            <thead>
+            <tr>
+                <th style="width: 7px;">#</th>
+                <th style="width: 35px;">Edad</th>
+                <th>Educación</th>
+                <th style="width: 65px;"></th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="variables">
+        <table class="table" style="width: 50%; margin: 0 auto;">
+            <thead>
+            <tr>
+                <th style="width: 50%">Variable</th>
+                <th>Valor</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>kids_under</td>
+                <td class="kids_under">1</td>
+            </tr>
+            <tr>
+                <td>hh_size_rec</td>
+                <td class="hh_size_rec">4</td>
+            </tr>
+            <tr>
+                <td>no_spouse</td>
+                <td class="no_spouse">0</td>
+            </tr>
+            <tr>
+                <td>age_head</td>
+                <td class="age_head">45</td>
+            </tr>
+            <tr>
+                <td>age_spouse</td>
+                <td class="age_spouse">40</td>
+            </tr>
+            <tr>
+                <td>dependency</td>
+                <td class="dependency">1/3</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
 
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="/assets/js/jquery.js"></script>
-<script src="/assets/js/bootstrap-transition.js"></script>
-<script src="/assets/js/bootstrap-alert.js"></script>
-<script src="/assets/js/bootstrap-modal.js"></script>
-<script src="/assets/js/bootstrap-dropdown.js"></script>
-<script src="/assets/js/bootstrap-scrollspy.js"></script>
-<script src="/assets/js/bootstrap-tab.js"></script>
-<script src="/assets/js/bootstrap-tooltip.js"></script>
-<script src="/assets/js/bootstrap-popover.js"></script>
-<script src="/assets/js/bootstrap-button.js"></script>
-<script src="/assets/js/bootstrap-collapse.js"></script>
-<script src="/assets/js/bootstrap-carousel.js"></script>
-<script src="/assets/js/bootstrap-typeahead.js"></script>
+<script src="/assets/js/jquery-inheritance.js"></script>
+<script src="/assets/js/d3.v2.min.js"></script>
 <script src="/assets/js/less-1.3.0.min.js"></script>
+
+<script src="/assets/js/Model.js"></script>
+<script src="/assets/js/familyBuilder.js"></script>
+
+
+<script type="text/javascript">
+
+
+
+    // Delete member
+    $("#family .deleteMember").click(function() {
+        console.log(this);        //TODO(gb): Remove trace!!!
+    })
+
+    $(function() {
+
+        var family = [
+            { age: 45, education: 3, head: true, spouse: false },
+            { age: 51, education: 1, head: false, spouse: true },
+            { age: 12, education: 2, head: false, spouse: false },
+            { age: 3, education: 0, head: false, spouse: false }
+        ];
+
+        var model = new Model(family, "family");
+        graph();
+    });
+
+    function graph() {
+
+    }
+
+
+
+</script>
 
 </body>
 </html>

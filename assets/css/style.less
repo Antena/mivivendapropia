@@ -1,7 +1,56 @@
+@content-width: 798px;
+@graph-width: 544px;
+@info-width: @content-width - @graph-width;
+@info-padding: 10px;
+
 body {
     background: #EFEFEF;
 }
 
-.container {
-    background: #FFFFFF;
+#content {
+    width: @content-width;
+    margin: 0 auto;
+    background-color: #FFFFFF;
+    height: 500px;
+    padding-top: 20px
+}
+
+#graph {
+    width: @graph-width;
+    float: left;
+}
+
+#info {
+    width: @info-width - 2 * @info-padding;
+    margin-left: @info-padding;
+    float: left;
+}
+
+#family {
+    .deleteMember {
+        display: none;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    i {
+        cursor: pointer;
+    }
+
+    .ageCell {
+        text-align: center;
+    }
+
+    .educationCell {
+        i { margin-right: 3px; }
+    }
+
+    .iconsCell {
+        i { margin-right: 3px; }
+    }
+
+
+
 }
