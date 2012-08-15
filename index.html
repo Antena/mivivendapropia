@@ -48,7 +48,7 @@
             </tbody>
             <tfoot>
             <tr>
-                <th><i class="icon-plus-sign" id="addMember"></i></th>
+                <th><i class="icon-plus-sign" id="addMember" rel="tooltip" title="Agregar un nuevo miembro"></i></th>
                 <th></th>
                 <th></th>
                 <th></th>
@@ -125,6 +125,7 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="/assets/js/jquery.js"></script>
 <script src="/assets/js/jquery-inheritance.js"></script>
+<script src="/assets/js/bootstrap-tooltip.js"></script>
 <script src="/assets/js/d3.v2.min.js"></script>
 <script src="/assets/js/less-1.3.0.min.js"></script>
 <script src="/assets/js/Model.js"></script>
@@ -136,28 +137,19 @@
 
     $("#addMember").click(function() {
         model.addMember();
-    });
+    }).tooltip({placement:'bottom'});
+
 
     $(function() {
-
         var family = [
             { age: 45, education: 3, head: true, spouse: false },
             { age: 40, education: 2, head: false, spouse: true },
-            { age: 15, education: 1, head: false, spouse: false },
             { age: 11, education: 1, head: false, spouse: false },
             { age: 3, education: 0, head: false, spouse: false }
         ];
 
         model = new Model(family, "family");
-        graph();
     });
-
-    function graph() {
-
-    }
-
-
-
 </script>
 
 </body>

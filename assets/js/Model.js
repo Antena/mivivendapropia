@@ -7,6 +7,7 @@ var Model = Class.extend({
         this.table = $("#"+familyTableId);
 
         this.education_max = 3;
+        this.levels = ['Primario completo', 'Secundario completo', 'Educación superior completa'];
 
         this.resetVars();
         this.update();
@@ -189,7 +190,10 @@ var Model = Class.extend({
             // education
             var educationCell = $('<td class="educationCell" data-education="'+member.education+'"></td>');
             for (var j=0; j<this.education_max; j++) {
-                var bookIcon = $('<i class="icon-book" data-index="' + j +'"></i>');
+                var bookIcon = $('<i class="icon-book"></i>');
+                bookIcon.attr("data-index", j);
+                self._addTooltip(bookIcon, self.levels[j]);
+
                 if ( j >= member.education) {
                     bookIcon.addClass('icon-white');
                 } else {
@@ -244,10 +248,17 @@ var Model = Class.extend({
 
             // icons
             var iconsCell = $('<td class="iconsCell"></td>');
+
+            // head icon
             var headIcon = $('<i class="icon-user"></i>');
-            var spouseIcon = $('<i class="icon-heart"></i>');
-            if (!member.head) { headIcon.addClass('icon-white'); } else { headIcon.addClass("selected"); }
-            if (!member.spouse) { spouseIcon.addClass('icon-white'); } else { spouseIcon.addClass("selected"); }
+            if (!member.head) {
+                headIcon.addClass('icon-white');
+                self._addTooltip(headIcon, "Marcar como jefe de familia");
+            } else {
+                headIcon.addClass("selected");
+                self._addTooltip(headIcon, "Jefe de familia");
+            }
+
             headIcon.hover(function() {
                     $(this).removeClass("icon-white");
                 }, function() {
@@ -261,6 +272,16 @@ var Model = Class.extend({
                 self.setHead(index, this);
                 self.update();
             });
+
+            // spouse icon
+            var spouseIcon = $('<i class="icon-heart"></i>');
+            if (!member.spouse) {
+                spouseIcon.addClass('icon-white');
+                self._addTooltip(spouseIcon, "Marcar como cónyuge");
+            } else {
+                spouseIcon.addClass("selected");
+                self._addTooltip(spouseIcon, "Cónyugue")
+            }
             spouseIcon.hover(function() {
                     $(this).removeClass("icon-white");
                 }, function() {
@@ -274,7 +295,12 @@ var Model = Class.extend({
                 self.setSpouse(index, this);
                 self.update();
             });
-            var deleteLink = $('<a class="deleteMember" href="#"><i class="icon-minus-sign"></i></a>');
+
+            // delete link
+            var deleteLink = $('<a class="deleteMember" href="#"></a>');
+            var deleteIcon = $('<i class="icon-minus-sign"></i>');
+            self._addTooltip(deleteIcon, "Eliminar a este miembro");
+            deleteLink.append(deleteIcon);
             deleteLink.click(function() {
                 var index = $(this).parent().parent().attr("data-index");
                 self.deleteMember(index);
@@ -292,6 +318,14 @@ var Model = Class.extend({
 
             this.table.append(row);
         }
+    },
+
+    _addTooltip : function(elem, text) {
+        elem.attr("rel", "tooltip");
+        elem.attr("title", text);
+        elem.tooltip({
+            placement: 'bottom'}
+        );
     },
 
     drawGraph : function() {
