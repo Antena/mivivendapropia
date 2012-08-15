@@ -177,7 +177,7 @@ var Model = Class.extend({
             // age
             var ageCell = $('<td class="ageCell"></td>');
             var ageInput = $('<input type="text" value="'+member.age+'">');
-            ageInput.keydown(function() {
+            ageInput.change(function() {
                 var index = $(this).parent().parent().attr("data-index");
                 var age = parseInt($(this).attr("value"));
                 $(this).attr("value", age);
