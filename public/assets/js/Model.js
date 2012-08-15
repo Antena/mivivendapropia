@@ -299,7 +299,7 @@ var Model = Class.extend({
             // delete link
             var deleteLink = $('<a class="deleteMember" href="#"></a>');
             var deleteIcon = $('<i class="icon-minus-sign"></i>');
-            self._addTooltip(deleteIcon, "Eliminar a este miembro");
+            deleteLink.append(deleteIcon);
             deleteLink.append(deleteIcon);
             deleteLink.click(function() {
                 var index = $(this).parent().parent().attr("data-index");
