@@ -11,7 +11,7 @@ body {
     width: @content-width;
     margin: 0 auto;
     background-color: #FFFFFF;
-    height: 500px;
+    height: 650px;
     padding-top: 20px;
     margin-top:  20px;
 }
@@ -23,10 +23,9 @@ body {
 
 #info {
     width: @info-width - 2 * @info-padding;
-    max-height: 470px;
-    margin-left: @info-padding;
-    float: left;
-    overflow-y: scroll;
+    height: 100%;
+    margin-right: @info-padding;
+    float: right;
 }
 
 #family {
@@ -79,7 +78,29 @@ body {
             margin-right: 0px;
         }
     }
+}
 
+#headJob {
+    width: @graph-width - 2 * @info-padding;
+    float: left;
+    min-height: 150px;
+    padding: 0px @info-padding;
 
+    .btn-group {
+        width: (@graph-width - 2 * @info-padding)/2 - 2*@info-padding;
+        float: left;
+        margin-left: 0px;
+        margin-right: @info-padding;
 
+        &.full-width {
+            width: 100%;
+        }
+    }
+
+    label {
+        width: 150px;
+        float: left;
+        height: 28px;
+        margin-right: 25px;
+    }
 }
