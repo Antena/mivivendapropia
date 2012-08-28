@@ -133,11 +133,14 @@ var Model = Class.extend({
         var head = this.table.find("tbody i.icon-user.selected");
         head.removeClass("selected");
         head.addClass("icon-white");
+        head.attr("data-original-title", "Marcar como jefe de familia");
         this.family[this._headIndex].head = false;
 
 
         $(elem).removeClass("icon-white");
         $(elem).addClass("selected");
+        $(elem).attr("data-original-title", "Jefe de familia");
+        $(elem).tooltip("show");
         this.family[index].head = true;
         this._headIndex = index;
     },
@@ -151,12 +154,15 @@ var Model = Class.extend({
             var spouse = this.table.find("tbody i.icon-heart.selected");
             spouse.removeClass("selected");
             spouse.addClass("icon-white");
+            spouse.attr("data-original-title", "Marcar como cónyuge");
             this.family[this._spouseIndex].spouse = false;
         }
 
         if (this._spouseIndex != index) {
             $(elem).removeClass("icon-white");
             $(elem).addClass("selected");
+            $(elem).attr("data-original-title", "Cónyuge");
+            $(elem).tooltip("show");
             this.family[index].spouse = true;
             this._spouseIndex = index;
         }
@@ -299,10 +305,15 @@ var Model = Class.extend({
             // delete link
             var deleteLink = $('<a class="deleteMember" href="#"></a>');
             var deleteIcon = $('<i class="icon-minus-sign"></i>');
+            self._addTooltip(deleteIcon, "Eliminar miembro");
             deleteLink.append(deleteIcon);
             deleteLink.append(deleteIcon);
+
             deleteLink.click(function() {
                 var index = $(this).parent().parent().attr("data-index");
+                var icon = $(this).find("i");
+                console.log(icon);        //TODO(gb): Remove trace!!!
+                $(icon).tooltip("hide");
                 self.deleteMember(index);
             });
 
