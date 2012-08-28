@@ -313,7 +313,6 @@ var Model = Class.extend({
             deleteLink.click(function() {
                 var index = $(this).parent().parent().attr("data-index");
                 var icon = $(this).find("i");
-                console.log(icon);        //TODO(gb): Remove trace!!!
                 $(icon).tooltip("hide");
                 self.deleteMember(index);
             });
@@ -407,5 +406,6 @@ var Model = Class.extend({
         $("#variables td.secondary_s1").text(this.secondary_s1 + 0);
         $("#variables td.superior_s").text(this.superior_s + 0);
         $("#variables td.dependency").text(this.dependency);
+        $("#variables td.informal").text(this.informal);
     }
 });
