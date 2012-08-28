@@ -9,6 +9,19 @@ var Model = Class.extend({
         this.education_max = 3;
         this.levels = ['Primario completo', 'Secundario completo', 'Educación superior completa'];
 
+        this.svg = null,
+            this.yAxisGroup = null,
+            this.xAxisGroup = null,
+            this.dataCirclesGroup = null,
+            this.dataLinesGroup = null;
+        this.graphWidth = 544;
+        this.graphHeight = 455;
+        this.graphMargin = 40;
+        this.maxDataPointsForDots = 50,
+            this.transitionDuration = 1000;
+        this.pointRadius = 4;
+        this.yAxisMax = 1000;
+
         this.resetVars();
         this.update();
         this.drawTable();
@@ -79,6 +92,7 @@ var Model = Class.extend({
         this.dependency = this._non_working_age / (this.hh_size_rec - this._non_working_age);
 
         this.show();
+        this.updateGraph();
     },
 
     setEducation: function(index, value) {
@@ -335,62 +349,197 @@ var Model = Class.extend({
         elem.attr("rel", "tooltip");
         elem.attr("title", text);
         elem.tooltip({
-            placement: 'bottom'}
+                placement: 'bottom'}
         );
     },
 
     drawGraph : function() {
-        var n = 5, // number of samples
-            m = 6, // number of series
-            data = d3.range(m).map(function () {
-                return d3.range(n).map(Math.random);
-            });
-        var w = 544,
-            h = 460,
-            x = d3.scale.linear().domain([0, 1]).range([h, 0]),
-            y0 = d3.scale.ordinal().domain(d3.range(n)).rangeBands([0, w], .2),
-            y1 = d3.scale.ordinal().domain(d3.range(m)).rangeBands([0, y0.rangeBand()]),
-            z = d3.scale.category10();
-        var vis = d3.select("#graph")
-            .append("svg:svg")
-            .attr("width", w)
-            .attr("height", h + 40)
-            .append("svg:g")
-            .attr("transform", "translate(10,10)");
-        var g = vis.selectAll("g")
-            .data(data)
-            .enter().append("svg:g")
-            .attr("fill", function (d, i) {
-                return z(i);
+        var self = this;
+
+        self._draw();
+    },
+
+    _draw : function() {
+        var self = this;
+
+        var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+
+        var data = self._generateData();
+        var max = self.yAxisMax;
+        var min = 0;
+
+        var x = d3.time.scale().range([0, self.graphWidth - self.graphMargin * 2]).domain([data[0].date, data[data.length - 1].date]);
+        var y = d3.scale.linear().range([self.graphHeight - self.graphMargin * 2, 0]).domain([min, max]);
+
+        var xAxis = d3.svg.axis().scale(x).tickSize(self.graphHeight - self.graphMargin * 2).tickPadding(10).ticks(7);
+        var yAxis = d3.svg.axis().scale(y).orient('left').tickSize(-self.graphWidth + self.graphMargin * 2).tickPadding(10);
+        var t = null;
+
+        svg = d3.select('#graph').select('svg').select('g');
+        if (svg.empty()) {
+            svg = d3.select('#graph')
+                .append('svg:svg')
+                .attr('width', self.graphWidth)
+                .attr('height', self.graphHeight)
+                .attr('class', 'viz')
+                .append('svg:g')
+                .attr('transform', 'translate(' + self.graphMargin + ',' + self.graphMargin + ')');
+        }
+
+        t = svg.transition().duration(self.transitionDuration);
+
+        // y ticks and labels
+        if (!self.yAxisGroup) {
+            self.yAxisGroup = svg.append('svg:g')
+                .attr('class', 'yTick')
+                .call(yAxis);
+        }
+        else {
+            t.select('.yTick').call(yAxis);
+        }
+
+        // x ticks and labels
+        if (!self.xAxisGroup) {
+            self.xAxisGroup = svg.append('svg:g')
+                .attr('class', 'xTick')
+                .call(xAxis);
+        }
+        else {
+            t.select('.xTick').call(xAxis);
+        }
+
+        self._plotData(self._generateData(), x, y);
+
+    },
+
+    _plotData : function(data, x, y) {
+        var self = this;
+
+        // Draw the lines
+        if (!self.dataLinesGroup) {
+            self.dataLinesGroup = svg.append('svg:g');
+        }
+
+        var dataLines = self.dataLinesGroup.selectAll('.data-line')
+            .data([data]);
+
+        var line = d3.svg.line()
+            // assign the X function to plot our line as we wish
+            .x(function(d,i) {
+                // verbose logging to show what's actually being done
+                //console.log('Plotting X value for date: ' + d.date + ' using index: ' + i + ' to be at: ' + x(d.date) + ' using our xScale.');
+                // return the X coordinate where we want to plot this datapoint
+                //return x(i);
+                return x(d.date);
             })
-            .attr("transform", function (d, i) {
-                return "translate(" + y1(i) + ",0)";
-            });
-        var rect = g.selectAll("rect")
-            .data(Object)
-            .enter().append("svg:rect")
-            .attr("transform", function (d, i) {
-                return "translate(" + y0(i) + ",0)";
+            .y(function(d) {
+                // verbose logging to show what's actually being done
+                //console.log('Plotting Y value for data value: ' + d.value + ' to be at: ' + y(d.value) + " using our yScale.");
+                // return the Y coordinate where we want to plot this datapoint
+                //return y(d);
+                return y(d.value);
             })
-            .attr("width", y1.rangeBand())
-            .attr("height", x)
-            .attr("y", function (d) {
-                return h - x(d);
-            });
-        var text = vis.selectAll("text")
-            .data(d3.range(n))
-            .enter().append("svg:text")
-            .attr("class", "group")
-            .attr("transform", function (d, i) {
-                return "translate(" + y0(i) + ",0)";
+            .interpolate("linear");
+
+        var garea = d3.svg.area()
+            .interpolate("linear")
+            .x(function(d) {
+                // verbose logging to show what's actually being done
+                return x(d.date);
             })
-            .attr("x", y0.rangeBand() / 2)
-            .attr("y", h + 6)
-            .attr("dy", ".71em")
-            .attr("text-anchor", "middle")
-            .text(function (d, i) {
-                return String.fromCharCode(65 + i);
+            .y0(self.graphHeight - self.graphMargin * 2)
+            .y1(function(d) {
+                // verbose logging to show what's actually being done
+                return y(d.value);
             });
+
+//        dataLines
+//            .enter()
+//            .append('svg:path')
+//            .attr("class", "area")
+//            .attr("d", garea(data));
+
+        dataLines.enter().append('path')
+            .attr('class', 'data-line')
+            .style('opacity', 0.3)
+            .attr("d", line(data));
+
+        dataLines.transition()
+            .attr("d", line)
+            .duration(self.transitionDuration)
+            .style('opacity', 1)
+            .attr("transform", function(d) { return "translate(" + x(d.date) + "," + y(d.value) + ")"; });
+
+        dataLines.exit()
+            .transition()
+            .attr("d", line)
+            .duration(self.transitionDuration)
+            .attr("transform", function(d) { return "translate(" + x(d.date) + "," + y(0) + ")"; })
+            .style('opacity', 1e-6)
+            .remove();
+
+//        d3.selectAll(".area").transition()
+//            .duration(self.transitionDuration)
+//            .attr("d", garea(data));
+
+        // Draw the points
+        if (!self.dataCirclesGroup) {
+            self.dataCirclesGroup = svg.append('svg:g');
+        }
+
+        var circles = self.dataCirclesGroup.selectAll('.data-point')
+            .data(data);
+
+        circles
+            .enter()
+            .append('svg:circle')
+            .attr('class', 'data-point')
+            .style('opacity', 1e-6)
+            .attr('cx', function(d) { return x(d.date) })
+            .attr('cy', function() { return y(0) })
+            .attr('r', function() { return (data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
+            .transition()
+            .duration(self.transitionDuration)
+            .style('opacity', 1)
+            .attr('cx', function(d) { return x(d.date) })
+            .attr('cy', function(d) { return y(d.value) });
+
+        circles
+            .transition()
+            .duration(self.transitionDuration)
+            .attr('cx', function(d) { return x(d.date) })
+            .attr('cy', function(d) { return y(d.value) })
+            .attr('r', function() { return (data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
+            .style('opacity', 1);
+
+        circles
+            .exit()
+            .transition()
+            .duration(self.transitionDuration)
+            // Leave the cx transition off. Allowing the points to fall where they lie is best.
+            //.attr('cx', function(d, i) { return xScale(i) })
+            .attr('cy', function() { return y(0) })
+            .style("opacity", 1e-6)
+            .remove();
+    },
+
+    _generateData : function() {
+        var data = [];
+        var i = 5;
+
+        while (i--) {
+            var date = new Date();
+            date.setDate(date.getDate() - i);
+            date.setHours(0, 0, 0, 0);
+            data.push({'value' : Math.round(Math.random()*this.yAxisMax), 'date' : date});
+        }
+
+        console.log(data);        //TODO(gb): Remove trace!!!
+        return data;
+    },
+
+    updateGraph: function() {
+        this._draw();
     },
 
     show : function() {
