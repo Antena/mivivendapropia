@@ -9,11 +9,13 @@ body {
 
 #content {
     width: @content-width;
+    height: 485px;
     margin: 0 auto;
     background-color: #FFFFFF;
-    height: 650px;
     padding-top: 20px;
+    padding-bottom: 20px;
     margin-top:  20px;
+    margin-bottom: 20px;
 }
 
 #graph {
@@ -80,27 +82,16 @@ body {
     }
 }
 
-#headJob {
-    width: @graph-width - 2 * @info-padding;
+#head {
     float: left;
     min-height: 150px;
     padding: 0px @info-padding;
 
     .btn-group {
-        width: (@graph-width - 2 * @info-padding)/2 - 2*@info-padding;
-        float: left;
         margin-left: 0px;
-        margin-right: @info-padding;
-
-        &.full-width {
-            width: 100%;
-        }
+        margin-bottom: 20px;
     }
 
     label {
-        width: 150px;
-        float: left;
-        height: 28px;
-        margin-right: 25px;
     }
 }

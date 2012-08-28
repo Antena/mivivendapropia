@@ -121,6 +121,7 @@ var Model = Class.extend({
             head:self._headIndex == null,
             spouse:false
         });
+        $("#addMember").tooltip("hide");
         this.update();
         this.drawTable();
     },
