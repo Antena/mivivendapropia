@@ -22,12 +22,20 @@ var Model = Class.extend({
         this.yAxisMax = 100;
 
         this.quintiles = [
-            { label: "Quintil 1", dataLinesGroup: null, dataCirclesGroup:null, color:"#E2DF9A"  },
-            { label: "Quintil 2", dataLinesGroup: null, dataCirclesGroup:null, color:"#EBE54D"  },
-            { label: "Quintil 3", dataLinesGroup: null, dataCirclesGroup:null, color:"#757449"  },
-            { label: "Quintil 4", dataLinesGroup: null, dataCirclesGroup:null, color:"#4B490B"  },
-            { label: "Quintil 5", dataLinesGroup: null, dataCirclesGroup:null, color:"#FF0051"  }
+            { label: "Quintil 1" },
+            { label: "Quintil 2" },
+            { label: "Quintil 3" },
+            { label: "Quintil 4" },
+            { label: "Quintil 5" }
         ];
+
+        this.lines = [
+            { label: "Pampeana", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#E2DF9A"  },
+            { label: "NOA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#EBE54D"  },
+            { label: "NEA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#757449"  },
+            { label: "Cuyo", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#4B490B"  },
+            { label: "Patagonia", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#FF0051"  }
+        ]
 
         this.resetVars();
         this.update();
@@ -422,24 +430,23 @@ var Model = Class.extend({
         }
 
 
-        for (var i=0; i<this.quintiles.length; i++) {
-            self._plotData(self._generateData(), i, x, y);
+        for (var i=0; i<this.lines.length; i++) {
+            this.lines[i].data = self._generateData();
+            self._plotData(this.lines[i], x, y);
         }
 
     },
 
-    _plotData : function(data, i, x, y) {
+    _plotData : function(region, x, y) {
         var self = this;
-        var quintile = self.quintiles[i];
 
         // Draw the lines
-
-        if (!quintile.dataLinesGroup) {
-            quintile.dataLinesGroup = svg.append('svg:g');
+        if (!region.dataLinesGroup) {
+            region.dataLinesGroup = svg.append('svg:g');
         }
 
-        var dataLines = quintile.dataLinesGroup.selectAll('.data-line')
-            .data([data]);
+        var dataLines = region.dataLinesGroup.selectAll('.data-line')
+            .data([region.data]);
 
         var line = d3.svg.line()
             .x(function(d,i) {
@@ -453,8 +460,8 @@ var Model = Class.extend({
         dataLines.enter().append('path')
             .attr('class', 'data-line')
             .style('opacity', 0.3)
-            .style('stroke', quintile.color)
-            .attr("d", line(data));
+            .style('stroke', region.color)
+            .attr("d", line(region.data));
 
         dataLines.transition()
             .attr("d", line)
@@ -471,22 +478,22 @@ var Model = Class.extend({
             .remove();
 
         // Draw the points
-        if (!quintile.dataCirclesGroup) {
-            quintile.dataCirclesGroup = svg.append('svg:g');
+        if (!region.dataCirclesGroup) {
+            region.dataCirclesGroup = svg.append('svg:g');
         }
 
-        var circles = quintile.dataCirclesGroup.selectAll('.data-point')
-            .data(data);
+        var circles = region.dataCirclesGroup.selectAll('.data-point')
+            .data(region.data);
 
         circles
             .enter()
             .append('svg:circle')
             .attr('class', 'data-point')
             .style('opacity', 1e-6)
-            .style('stroke', quintile.color)
+            .style('stroke', region.color)
             .attr('cx', function(d) { return x(d.quintile) })
             .attr('cy', function() { return y(0) })
-            .attr('r', function() { return (data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
+            .attr('r', function() { return (region.data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
             .transition()
             .duration(self.transitionDuration)
             .style('opacity', 1)
@@ -498,7 +505,7 @@ var Model = Class.extend({
             .duration(self.transitionDuration)
             .attr('cx', function(d) { return x(d.quintile) })
             .attr('cy', function(d) { return y(d.value) })
-            .attr('r', function() { return (data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
+            .attr('r', function() { return (region.data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
             .style('opacity', 1);
 
         circles
@@ -513,9 +520,8 @@ var Model = Class.extend({
     _generateData : function() {
         var self = this;
         var data = [];
-        var i = 5;
 
-        while (i--) {
+        for (var i=0; i<self.quintiles.length; i++) {
             data.push({
                 'value' : Math.round(Math.random()*this.yAxisMax),
                 'quintile' : self.quintiles[i].label
