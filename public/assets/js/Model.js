@@ -11,6 +11,8 @@ var Model = Class.extend({
 
         // Graph
         this.svg = null;
+        this.y = null;
+        this.x = null;
         this.yAxisGroup = null;
         this.xAxisGroup = null;
         this.graphWidth = 544;
@@ -30,12 +32,12 @@ var Model = Class.extend({
         ];
 
         this.lines = [
-            { label: "Pampeana", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#E2DF9A"  },
-            { label: "NOA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#EBE54D"  },
-            { label: "NEA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#757449"  },
-            { label: "Cuyo", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#4B490B"  },
-            { label: "Patagonia", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#FF0051"  }
-        ]
+            { label: "Pampeana", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#ECD078" },
+            { label: "NOA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#D95B43" },
+            { label: "NEA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#C02942" },
+            { label: "Cuyo", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#542437" },
+            { label: "Patagonia", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#53777A" }
+        ];
 
         this.resetVars();
         this.update();
@@ -385,20 +387,19 @@ var Model = Class.extend({
     _draw : function() {
         var self = this;
 
-        var data = self._generateData();
         var max = self.yAxisMax;
         var min = 0;
 
-        var x = d3.scale.ordinal().rangePoints([0, self.graphWidth - self.graphMargin * 2], 0.5).domain(self._getQuintileLabels());
-        var y = d3.scale.linear().range([self.graphHeight - self.graphMargin * 2, 0]).domain([min, max]);
+        self.x = d3.scale.ordinal().rangePoints([0, self.graphWidth - self.graphMargin * 2], 0.5).domain(self._getQuintileLabels());
+        self.y = d3.scale.linear().range([self.graphHeight - self.graphMargin * 2, 0]).domain([min, max]);
 
-        var xAxis = d3.svg.axis().scale(x).tickSize(self.graphHeight - self.graphMargin * 2).tickPadding(10).ticks(7);
-        var yAxis = d3.svg.axis().scale(y).orient('left').tickSize(-self.graphWidth + self.graphMargin * 2).tickPadding(10);
+        var xAxis = d3.svg.axis().scale(self.x).tickSize(self.graphHeight - self.graphMargin * 2).tickPadding(10).ticks(7);
+        var yAxis = d3.svg.axis().scale(self.y).orient('left').tickSize(-self.graphWidth + self.graphMargin * 2).tickPadding(10);
+
         var t = null;
-
-        svg = d3.select('#graph').select('svg').select('g');
-        if (svg.empty()) {
-            svg = d3.select('#graph')
+        self.svg = d3.select('#graph').select('svg').select('g');
+        if (self.svg.empty()) {
+            self.svg = d3.select('#graph')
                 .append('svg:svg')
                 .attr('width', self.graphWidth)
                 .attr('height', self.graphHeight)
@@ -407,11 +408,11 @@ var Model = Class.extend({
                 .attr('transform', 'translate(' + self.graphMargin + ',' + self.graphMargin + ')');
         }
 
-        t = svg.transition().duration(self.transitionDuration);
+        t = self.svg.transition().duration(self.transitionDuration);
 
         // y ticks and labels
         if (!self.yAxisGroup) {
-            self.yAxisGroup = svg.append('svg:g')
+            self.yAxisGroup = self.svg.append('svg:g')
                 .attr('class', 'yTick')
                 .call(yAxis);
         }
@@ -421,7 +422,7 @@ var Model = Class.extend({
 
         // x ticks and labels
         if (!self.xAxisGroup) {
-            self.xAxisGroup = svg.append('svg:g')
+            self.xAxisGroup = self.svg.append('svg:g')
                 .attr('class', 'xTick')
                 .call(xAxis);
         }
@@ -432,17 +433,17 @@ var Model = Class.extend({
 
         for (var i=0; i<this.lines.length; i++) {
             this.lines[i].data = self._generateData();
-            self._plotData(this.lines[i], x, y);
+            self._plotData(this.lines[i]);
         }
 
     },
 
-    _plotData : function(region, x, y) {
+    _plotData : function(region) {
         var self = this;
 
         // Draw the lines
         if (!region.dataLinesGroup) {
-            region.dataLinesGroup = svg.append('svg:g');
+            region.dataLinesGroup = self.svg.append('svg:g');
         }
 
         var dataLines = region.dataLinesGroup.selectAll('.data-line')
@@ -450,10 +451,10 @@ var Model = Class.extend({
 
         var line = d3.svg.line()
             .x(function(d,i) {
-                return x(d.quintile);
+                return self.x(d.quintile);
             })
             .y(function(d) {
-                return y(d.value);
+                return self.y(d.value);
             })
             .interpolate("cardinal");
 
@@ -467,19 +468,19 @@ var Model = Class.extend({
             .attr("d", line)
             .duration(self.transitionDuration)
             .style('opacity', 1)
-            .attr("transform", function(d) { return "translate(" + x(d.quintile) + "," + y(d.value) + ")"; });
+            .attr("transform", function(d) { return "translate(" + self.x(d.quintile) + "," + self.y(d.value) + ")"; });
 
         dataLines.exit()
             .transition()
             .attr("d", line)
             .duration(self.transitionDuration)
-            .attr("transform", function(d) { return "translate(" + x(d.quintile) + "," + y(0) + ")"; })
+            .attr("transform", function(d) { return "translate(" + self.x(d.quintile) + "," + self.y(0) + ")"; })
             .style('opacity', 1e-6)
             .remove();
 
         // Draw the points
         if (!region.dataCirclesGroup) {
-            region.dataCirclesGroup = svg.append('svg:g');
+            region.dataCirclesGroup = self.svg.append('svg:g');
         }
 
         var circles = region.dataCirclesGroup.selectAll('.data-point')
@@ -491,20 +492,20 @@ var Model = Class.extend({
             .attr('class', 'data-point')
             .style('opacity', 1e-6)
             .style('stroke', region.color)
-            .attr('cx', function(d) { return x(d.quintile) })
-            .attr('cy', function() { return y(0) })
+            .attr('cx', function(d) { return self.x(d.quintile) })
+            .attr('cy', function() { return self.y(0) })
             .attr('r', function() { return (region.data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
             .transition()
             .duration(self.transitionDuration)
             .style('opacity', 1)
-            .attr('cx', function(d) { return x(d.quintile) })
-            .attr('cy', function(d) { return y(d.value) });
+            .attr('cx', function(d) { return self.x(d.quintile) })
+            .attr('cy', function(d) { return self.y(d.value) });
 
         circles
             .transition()
             .duration(self.transitionDuration)
-            .attr('cx', function(d) { return x(d.quintile) })
-            .attr('cy', function(d) { return y(d.value) })
+            .attr('cx', function(d) { return self.x(d.quintile) })
+            .attr('cy', function(d) { return self.y(d.value) })
             .attr('r', function() { return (region.data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
             .style('opacity', 1);
 
@@ -512,7 +513,7 @@ var Model = Class.extend({
             .exit()
             .transition()
             .duration(self.transitionDuration)
-            .attr('cy', function() { return y(0) })
+            .attr('cy', function() { return self.y(0) })
             .style("opacity", 1e-6)
             .remove();
     },
