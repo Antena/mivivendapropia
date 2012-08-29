@@ -59,9 +59,10 @@ var Model = Class.extend({
     resetVars : function() {
         this.kids_under = 0;
         this.hh_size_rec = 0;
+        this.female_head = 0;
 
         this.age_head = 40;
-        this.no_spouse = true;
+        this.no_spouse = 1;
         this.primary1=0;
         this.secondary1=0;
         this.superior=0;
@@ -72,6 +73,20 @@ var Model = Class.extend({
         this.superior_s=0;
 
         this.dependency = 1;
+
+        this.informal = 0;
+
+        this.self_emplo = 0;
+
+        this.underwork = 0;
+
+        this.professional = 0;
+        this.technical = 0;
+        this.operative = 0;
+
+        this.migrant_int = 0;
+        this.migrant_li = 0;
+        this.migrant_pcia = 0;
 
         this._non_working_age = 0;
         this._headIndex = null;
@@ -104,7 +119,7 @@ var Model = Class.extend({
             if (member.spouse) {
                 this.age_spouse = member.age;
                 this._spouseIndex = i;
-                this.no_spouse = false;
+                this.no_spouse = 0;
                 this.primary_s1 = member.education == 1;
                 this.secondary_s1 = member.education == 2;
                 this.superior_s = member.education == 3;
@@ -116,8 +131,30 @@ var Model = Class.extend({
             }
         }
 
+        // female_head
+        this.female_head = parseInt($("#head .female_head .active").attr("data-value"));
+
         // dependency
         this.dependency = this._non_working_age / (this.hh_size_rec - this._non_working_age);
+
+        // informal
+        this.informal = parseInt($("#head .informal .active").attr("data-value"));
+
+        // self_emplo
+        this.self_emplo = parseInt($("#head .self_emplo .active").attr("data-value"));
+
+        // underwork
+        this.underwork = parseInt($("#head .underwork .active").attr("data-value"));
+
+        // job_type
+        this.professional = $("#head .job_type option.professional").attr("selected") == undefined ? 0 : 1;
+        this.technical = $("#head .job_type option.technical").attr("selected") == undefined ? 0 : 1;
+        this.operative = $("#head .job_type option.operative").attr("selected") == undefined ? 0 : 1;
+
+        // migrant
+        this.migrant_int = $("#head .migrant option.migrant_int").attr("selected") == undefined ? 0 : 1;
+        this.migrant_li = $("#head .migrant option.migrant_li").attr("selected") == undefined ? 0 : 1;
+        this.migrant_pcia = $("#head .migrant option.migrant_pcia").attr("selected") == undefined ? 0 : 1;
 
         this.show();
         this.updateGraph();
@@ -542,7 +579,8 @@ var Model = Class.extend({
     show : function() {
         $("#variables td.kids_under").text(this.kids_under);
         $("#variables td.hh_size_rec").text(this.hh_size_rec);
-        $("#variables td.no_spouse").text(this.no_spouse + 0);
+        $("#variables td.female_head").text(this.female_head);
+        $("#variables td.no_spouse").text(this.no_spouse);
         $("#variables td.age_head").text(this.age_head);
         $("#variables td.primary1").text(this.primary1 + 0);
         $("#variables td.secondary1").text(this.secondary1 + 0);
@@ -553,5 +591,13 @@ var Model = Class.extend({
         $("#variables td.superior_s").text(this.superior_s + 0);
         $("#variables td.dependency").text(this.dependency);
         $("#variables td.informal").text(this.informal);
+        $("#variables td.self_emplo").text(this.self_emplo);
+        $("#variables td.underwork").text(this.underwork);
+        $("#variables td.professional").text(this.professional);
+        $("#variables td.technical").text(this.technical);
+        $("#variables td.operative").text(this.operative);
+        $("#variables td.migrant_int").text(this.migrant_int);
+        $("#variables td.migrant_li").text(this.migrant_li);
+        $("#variables td.migrant_pcia").text(this.migrant_pcia);
     }
 });

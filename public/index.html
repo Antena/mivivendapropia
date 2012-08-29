@@ -82,45 +82,45 @@
                 <p></p>
                 <label>El jefe/jefa de familia es</label>
 
-                <div class="btn-group" data-toggle="buttons-radio">
-                    <button class="btn btn-small active">Hombre</button>
-                    <button class="btn btn-small">Mujer</button>
+                <div class="btn-group female_head" data-toggle="buttons-radio">
+                    <button data-value="0" class="btn btn-small active">Hombre</button>
+                    <button data-value="1" class="btn btn-small">Mujer</button>
                 </div>
 
-                <div class="btn-group" data-toggle="buttons-radio" style="margin-bottom: 0px;">
+                <div class="btn-group migrant" data-toggle="buttons-radio" style="margin-bottom: 0px;">
                     <label>¿Es inmigrante?</label>
                     <select class="span2">
                         <option>No</option>
-                        <option>Sí, internacional</option>
-                        <option>Sí, limítrofe</option>
-                        <option>Sí, de otra provincia</option>
+                        <option class="migrant_int">Sí, internacional</option>
+                        <option class="migrant_li">Sí, limítrofe</option>
+                        <option class="migrant_pcia">Sí, de otra provincia</option>
                     </select>
                 </div>
 
-                <div class="btn-group" data-toggle="buttons-radio">
+                <div class="btn-group informal" data-toggle="buttons-radio">
                     <label>¿Su trabajo es informal?</label>
-                    <button class="btn btn-small">Sí</button>
-                    <button class="btn btn-small active">No</button>
+                    <button data-value="1" class="btn btn-small">Sí</button>
+                    <button data-value="0" class="btn btn-small active">No</button>
                 </div>
 
-                <div class="btn-group" data-toggle="buttons-radio">
+                <div class="btn-group self_emplo" data-toggle="buttons-radio">
                     <label>¿Es auto-empleado?</label>
-                    <button class="btn btn-small">Sí</button>
-                    <button class="btn btn-small active">No</button>
+                    <button data-value="1" class="btn btn-small">Sí</button>
+                    <button data-value="0" class="btn btn-small active">No</button>
                 </div>
 
-                <div class="btn-group" data-toggle="buttons-radio">
+                <div class="btn-group underwork" data-toggle="buttons-radio">
                     <label>¿Es sub-empleado?</label>
-                    <button class="btn btn-small">Sí</button>
-                    <button class="btn btn-small active">No</button>
+                    <button data-value="1" class="btn btn-small">Sí</button>
+                    <button data-value="0" class="btn btn-small active">No</button>
                 </div>
 
-                <div class="btn-group" data-toggle="buttons-radio" style="margin-bottom: 0px;">
+                <div class="btn-group job_type" data-toggle="buttons-radio" style="margin-bottom: 0px;">
                     <label>Rubro</label>
                     <select class="span2">
-                        <option>Profesional</option>
-                        <option>Técnico</option>
-                        <option>Operativo</option>
+                        <option class="professional">Profesional</option>
+                        <option class="technical">Técnico</option>
+                        <option class="operative">Operativo</option>
                     </select>
                 </div>
 
@@ -130,7 +130,7 @@
 </div>
 
 <div id="variables">
-    <table class="table table-striped table-bordered table-condensed" style="width: 50%; margin: 0 auto;">
+    <table class="table table-striped table-bordered table-condensed" style="width: 50%; margin: 0 auto; margin-bottom: 20px">
         <thead>
         <tr>
             <th style="width: 50%">Variable</th>
@@ -145,6 +145,10 @@
         <tr>
             <td>hh_size_rec</td>
             <td class="hh_size_rec">4</td>
+        </tr>
+        <tr>
+            <td>female_head</td>
+            <td class="female_head">--</td>
         </tr>
         <tr>
             <td>no_spouse</td>
@@ -186,6 +190,43 @@
             <td>dependency</td>
             <td class="dependency">1/3</td>
         </tr>
+        <tr>
+            <td>informal</td>
+            <td class="informal">--</td>
+        </tr>
+        <tr>
+            <td>self_emplo</td>
+            <td class="self_emplo">--</td>
+        </tr>
+        <tr>
+            <td>underwork</td>
+            <td class="underwork">--</td>
+        </tr>
+        <tr>
+            <td>professional</td>
+            <td class="professional">--</td>
+        </tr>
+        <tr>
+            <td>technical</td>
+            <td class="technical">--</td>
+        </tr>
+        <tr>
+            <td>operative</td>
+            <td class="operative">--</td>
+        </tr>
+        <tr>
+            <td>migrant_int</td>
+            <td class="migrant_int">--</td>
+        </tr>
+        <tr>
+            <td>migrant_li</td>
+            <td class="migrant_li">--</td>
+        </tr>
+        <tr>
+            <td>migrant_pcia</td>
+            <td class="migrant_pcia">--</td>
+        </tr>
+
         </tbody>
     </table>
 </div>
@@ -198,7 +239,11 @@
         model.addMember();
     }).tooltip({placement:'bottom'});
 
-    $("#head .btn").click(function() {
+    $("#head .btn").change(function() {
+        model.update();
+    });
+
+    $("#head select").change(function() {
         model.update();
     });
 
