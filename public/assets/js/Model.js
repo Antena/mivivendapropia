@@ -21,6 +21,7 @@ var Model = Class.extend({
         this.maxDataPointsForDots = 50;
         this.transitionDuration = 1000;
         this.pointRadius = 4;
+        this.yAxisMin = 0;
         this.yAxisMax = 100;
         this.randomMin = 40;
         this.randomMax = 85;
@@ -390,7 +391,7 @@ var Model = Class.extend({
         var self = this;
 
         var max = self.yAxisMax;
-        var min = 0;
+        var min = self.yAxisMin;
 
         self.x = d3.scale.ordinal().rangePoints([0, self.graphWidth - self.graphMargin * 2], 0.5).domain(self._getQuintileLabels());
         self.y = d3.scale.linear().range([self.graphHeight - self.graphMargin * 2, 0]).domain([min, max]);
