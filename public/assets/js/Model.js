@@ -9,25 +9,38 @@ var Model = Class.extend({
         this.education_max = 3;
         this.levels = ['Primario completo', 'Secundario completo', 'Educación superior completa'];
 
-        this.svg = null,
-            this.yAxisGroup = null,
-            this.xAxisGroup = null,
-            this.dataCirclesGroup = null,
-            this.dataLinesGroup = null;
+        // Graph
+        this.svg = null;
+        this.yAxisGroup = null;
+        this.xAxisGroup = null;
         this.graphWidth = 544;
         this.graphHeight = 455;
         this.graphMargin = 40;
-        this.maxDataPointsForDots = 50,
-            this.transitionDuration = 1000;
+        this.maxDataPointsForDots = 50;
+        this.transitionDuration = 1000;
         this.pointRadius = 4;
         this.yAxisMax = 100;
 
-        this.quintiles = ["Quintil 1", "Quintil 2", "Quintil 3", "Quintil 4", "Quintil 5"];
+        this.quintiles = [
+            { label: "Quintil 1", dataLinesGroup: null, dataCirclesGroup:null, color:"#E2DF9A"  },
+            { label: "Quintil 2", dataLinesGroup: null, dataCirclesGroup:null, color:"#EBE54D"  },
+            { label: "Quintil 3", dataLinesGroup: null, dataCirclesGroup:null, color:"#757449"  },
+            { label: "Quintil 4", dataLinesGroup: null, dataCirclesGroup:null, color:"#4B490B"  },
+            { label: "Quintil 5", dataLinesGroup: null, dataCirclesGroup:null, color:"#FF0051"  }
+        ];
 
         this.resetVars();
         this.update();
         this.drawTable();
         this.drawGraph();
+    },
+
+    _getQuintileLabels : function() {
+        var labels = [];
+        for (var i=0; i<this.quintiles.length; i++) {
+            labels.push(this.quintiles[i].label);
+        }
+        return labels;
     },
 
     resetVars : function() {
@@ -368,7 +381,7 @@ var Model = Class.extend({
         var max = self.yAxisMax;
         var min = 0;
 
-        var x = d3.scale.ordinal().rangePoints([0, self.graphWidth - self.graphMargin * 2], 0.5).domain(self.quintiles);
+        var x = d3.scale.ordinal().rangePoints([0, self.graphWidth - self.graphMargin * 2], 0.5).domain(self._getQuintileLabels());
         var y = d3.scale.linear().range([self.graphHeight - self.graphMargin * 2, 0]).domain([min, max]);
 
         var xAxis = d3.svg.axis().scale(x).tickSize(self.graphHeight - self.graphMargin * 2).tickPadding(10).ticks(7);
@@ -408,45 +421,39 @@ var Model = Class.extend({
             t.select('.xTick').call(xAxis);
         }
 
-        self._plotData(self._generateData(), x, y);
-    },
 
-    _plotData : function(data, x, y) {
-        var self = this;
-
-        // Draw the lines
-        if (!self.dataLinesGroup) {
-            self.dataLinesGroup = svg.append('svg:g');
+        for (var i=0; i<this.quintiles.length; i++) {
+            self._plotData(self._generateData(), i, x, y);
         }
 
-        var dataLines = self.dataLinesGroup.selectAll('.data-line')
+    },
+
+    _plotData : function(data, i, x, y) {
+        var self = this;
+        var quintile = self.quintiles[i];
+
+        // Draw the lines
+
+        if (!quintile.dataLinesGroup) {
+            quintile.dataLinesGroup = svg.append('svg:g');
+        }
+
+        var dataLines = quintile.dataLinesGroup.selectAll('.data-line')
             .data([data]);
 
         var line = d3.svg.line()
-            // assign the X function to plot our line as we wish
             .x(function(d,i) {
                 return x(d.quintile);
             })
             .y(function(d) {
                 return y(d.value);
             })
-            .interpolate("linear");
-
-        var garea = d3.svg.area()
-            .interpolate("linear")
-            .x(function(d) {
-                // verbose logging to show what's actually being done
-                return x(d.quintile);
-            })
-            .y0(self.graphHeight - self.graphMargin * 2)
-            .y1(function(d) {
-                // verbose logging to show what's actually being done
-                return y(d.value);
-            });
+            .interpolate("cardinal");
 
         dataLines.enter().append('path')
             .attr('class', 'data-line')
             .style('opacity', 0.3)
+            .style('stroke', quintile.color)
             .attr("d", line(data));
 
         dataLines.transition()
@@ -464,11 +471,11 @@ var Model = Class.extend({
             .remove();
 
         // Draw the points
-        if (!self.dataCirclesGroup) {
-            self.dataCirclesGroup = svg.append('svg:g');
+        if (!quintile.dataCirclesGroup) {
+            quintile.dataCirclesGroup = svg.append('svg:g');
         }
 
-        var circles = self.dataCirclesGroup.selectAll('.data-point')
+        var circles = quintile.dataCirclesGroup.selectAll('.data-point')
             .data(data);
 
         circles
@@ -476,6 +483,7 @@ var Model = Class.extend({
             .append('svg:circle')
             .attr('class', 'data-point')
             .style('opacity', 1e-6)
+            .style('stroke', quintile.color)
             .attr('cx', function(d) { return x(d.quintile) })
             .attr('cy', function() { return y(0) })
             .attr('r', function() { return (data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
@@ -497,8 +505,6 @@ var Model = Class.extend({
             .exit()
             .transition()
             .duration(self.transitionDuration)
-            // Leave the cx transition off. Allowing the points to fall where they lie is best.
-            //.attr('cx', function(d, i) { return xScale(i) })
             .attr('cy', function() { return y(0) })
             .style("opacity", 1e-6)
             .remove();
@@ -512,7 +518,7 @@ var Model = Class.extend({
         while (i--) {
             data.push({
                 'value' : Math.round(Math.random()*this.yAxisMax),
-                'quintile' : self.quintiles[i]
+                'quintile' : self.quintiles[i].label
             });
         }
 
