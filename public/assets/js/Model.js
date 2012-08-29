@@ -20,7 +20,9 @@ var Model = Class.extend({
         this.maxDataPointsForDots = 50,
             this.transitionDuration = 1000;
         this.pointRadius = 4;
-        this.yAxisMax = 1000;
+        this.yAxisMax = 100;
+
+        this.quintiles = ["Quintil 1", "Quintil 2", "Quintil 3", "Quintil 4", "Quintil 5"];
 
         this.resetVars();
         this.update();
@@ -362,13 +364,11 @@ var Model = Class.extend({
     _draw : function() {
         var self = this;
 
-        var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
-
         var data = self._generateData();
         var max = self.yAxisMax;
         var min = 0;
 
-        var x = d3.time.scale().range([0, self.graphWidth - self.graphMargin * 2]).domain([data[0].date, data[data.length - 1].date]);
+        var x = d3.scale.ordinal().rangePoints([0, self.graphWidth - self.graphMargin * 2], 0.5).domain(self.quintiles);
         var y = d3.scale.linear().range([self.graphHeight - self.graphMargin * 2, 0]).domain([min, max]);
 
         var xAxis = d3.svg.axis().scale(x).tickSize(self.graphHeight - self.graphMargin * 2).tickPadding(10).ticks(7);
@@ -409,7 +409,6 @@ var Model = Class.extend({
         }
 
         self._plotData(self._generateData(), x, y);
-
     },
 
     _plotData : function(data, x, y) {
@@ -426,17 +425,9 @@ var Model = Class.extend({
         var line = d3.svg.line()
             // assign the X function to plot our line as we wish
             .x(function(d,i) {
-                // verbose logging to show what's actually being done
-                //console.log('Plotting X value for date: ' + d.date + ' using index: ' + i + ' to be at: ' + x(d.date) + ' using our xScale.');
-                // return the X coordinate where we want to plot this datapoint
-                //return x(i);
-                return x(d.date);
+                return x(d.quintile);
             })
             .y(function(d) {
-                // verbose logging to show what's actually being done
-                //console.log('Plotting Y value for data value: ' + d.value + ' to be at: ' + y(d.value) + " using our yScale.");
-                // return the Y coordinate where we want to plot this datapoint
-                //return y(d);
                 return y(d.value);
             })
             .interpolate("linear");
@@ -445,19 +436,13 @@ var Model = Class.extend({
             .interpolate("linear")
             .x(function(d) {
                 // verbose logging to show what's actually being done
-                return x(d.date);
+                return x(d.quintile);
             })
             .y0(self.graphHeight - self.graphMargin * 2)
             .y1(function(d) {
                 // verbose logging to show what's actually being done
                 return y(d.value);
             });
-
-//        dataLines
-//            .enter()
-//            .append('svg:path')
-//            .attr("class", "area")
-//            .attr("d", garea(data));
 
         dataLines.enter().append('path')
             .attr('class', 'data-line')
@@ -468,19 +453,15 @@ var Model = Class.extend({
             .attr("d", line)
             .duration(self.transitionDuration)
             .style('opacity', 1)
-            .attr("transform", function(d) { return "translate(" + x(d.date) + "," + y(d.value) + ")"; });
+            .attr("transform", function(d) { return "translate(" + x(d.quintile) + "," + y(d.value) + ")"; });
 
         dataLines.exit()
             .transition()
             .attr("d", line)
             .duration(self.transitionDuration)
-            .attr("transform", function(d) { return "translate(" + x(d.date) + "," + y(0) + ")"; })
+            .attr("transform", function(d) { return "translate(" + x(d.quintile) + "," + y(0) + ")"; })
             .style('opacity', 1e-6)
             .remove();
-
-//        d3.selectAll(".area").transition()
-//            .duration(self.transitionDuration)
-//            .attr("d", garea(data));
 
         // Draw the points
         if (!self.dataCirclesGroup) {
@@ -495,19 +476,19 @@ var Model = Class.extend({
             .append('svg:circle')
             .attr('class', 'data-point')
             .style('opacity', 1e-6)
-            .attr('cx', function(d) { return x(d.date) })
+            .attr('cx', function(d) { return x(d.quintile) })
             .attr('cy', function() { return y(0) })
             .attr('r', function() { return (data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
             .transition()
             .duration(self.transitionDuration)
             .style('opacity', 1)
-            .attr('cx', function(d) { return x(d.date) })
+            .attr('cx', function(d) { return x(d.quintile) })
             .attr('cy', function(d) { return y(d.value) });
 
         circles
             .transition()
             .duration(self.transitionDuration)
-            .attr('cx', function(d) { return x(d.date) })
+            .attr('cx', function(d) { return x(d.quintile) })
             .attr('cy', function(d) { return y(d.value) })
             .attr('r', function() { return (data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
             .style('opacity', 1);
@@ -524,17 +505,17 @@ var Model = Class.extend({
     },
 
     _generateData : function() {
+        var self = this;
         var data = [];
         var i = 5;
 
         while (i--) {
-            var date = new Date();
-            date.setDate(date.getDate() - i);
-            date.setHours(0, 0, 0, 0);
-            data.push({'value' : Math.round(Math.random()*this.yAxisMax), 'date' : date});
+            data.push({
+                'value' : Math.round(Math.random()*this.yAxisMax),
+                'quintile' : self.quintiles[i]
+            });
         }
 
-        console.log(data);        //TODO(gb): Remove trace!!!
         return data;
     },
 
