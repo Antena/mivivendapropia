@@ -22,6 +22,8 @@ var Model = Class.extend({
         this.transitionDuration = 1000;
         this.pointRadius = 4;
         this.yAxisMax = 100;
+        this.randomMin = 40;
+        this.randomMax = 85;
 
         this.quintiles = [
             { label: "Quintil 1" },
@@ -524,7 +526,7 @@ var Model = Class.extend({
 
         for (var i=0; i<self.quintiles.length; i++) {
             data.push({
-                'value' : Math.round(Math.random()*this.yAxisMax),
+                'value' : Math.floor(Math.random()*(this.randomMax - this.randomMin)) + this.randomMin,
                 'quintile' : self.quintiles[i].label
             });
         }
