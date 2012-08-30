@@ -21,7 +21,7 @@ var Model = Class.extend({
         this.maxDataPointsForDots = 50;
         this.transitionDuration = 1000;
         this.pointRadius = 4;
-        this.yAxisMin = 0;
+        this.yAxisMin = 60;
         this.yAxisMax = 100;
         this.randomMin = 40;
         this.randomMax = 85;
@@ -35,12 +35,16 @@ var Model = Class.extend({
         ];
 
         this.lines = [
+            { label: "GBA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#BBD078" },
             { label: "Pampeana", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#ECD078" },
             { label: "NOA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#D95B43" },
             { label: "NEA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#C02942" },
             { label: "Cuyo", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#542437" },
             { label: "Patagonia", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#53777A" }
         ];
+
+        // Model parameters
+
 
         this.resetVars();
         this.update();
@@ -472,10 +476,31 @@ var Model = Class.extend({
 
 
         for (var i=0; i<this.lines.length; i++) {
-            this.lines[i].data = self._generateData();
+            this.lines[i].data = self._calculateDummy(i);
             self._plotData(this.lines[i]);
         }
+    },
 
+    _calculateDummy: function(quintile) {
+        var self = this;
+        var fullData = [
+            [0.696894216, 0.839166815, 0.898347722, 0.934274396, 0.956534191],
+            [0.683417662, 0.824873081, 0.897759671, 0.922442901, 0.952293946],
+            [0.719967006, 0.854208897, 0.913712329, 0.945199623, 0.955324115],
+            [0.824792775, 0.918901363, 0.949981987, 0.965506051, 0.977924041],
+            [0.791121081, 0.899980128, 0.945657035, 0.961747072, 0.973836436],
+            [0.855466502, 0.91111014, 0.941273947, 0.94663874, 0.958941044]
+        ];
+
+        var data =[];
+        for (var i=0; i<self.quintiles.length; i++) {
+            data.push({
+                'value' : fullData[quintile][i] * 100,
+                'quintile' : self.quintiles[i].label
+            });
+        }
+
+        return data;
     },
 
     _plotData : function(region) {
@@ -568,6 +593,8 @@ var Model = Class.extend({
                 'quintile' : self.quintiles[i].label
             });
         }
+
+        console.log(data);        //TODO(gb): Remove trace!!!
 
         return data;
     },
