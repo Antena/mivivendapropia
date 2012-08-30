@@ -290,7 +290,7 @@ var Model = Class.extend({
     addMember : function() {
         var self = this;
         this.family.push({
-            age:30,
+            age:5,
             education:2,
             head:self._headIndex == null,
             spouse:false
