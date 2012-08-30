@@ -33,7 +33,18 @@
 <body>
 
 <div id="content">
-    <div id="graph"></div>
+
+    <div id="graph">
+        <div id="legend">
+            <ul>
+                <li class="GBA">GBA</li>
+                <li class="Pampeana">Pampeana</li>
+                <li class="NOA">NOA</li>
+                <li class="NEA">NEA</li>
+                <li class="Cuyo" style="color: #f5f5f5;">Cuyo</li>
+            </ul>
+        </div>
+    </div>
     <div id="info">
 
         <ul id="myTab" class="nav nav-tabs">
@@ -258,6 +269,12 @@
         ];
 
         model = new Model(family, "family");
+
+        var lines = model.getLines();
+
+        for (var i=0; i<lines.length; i++) {
+            $("#legend ." + lines[i].label).css("background-color", lines[i].color);
+        }
     });
 </script>
 

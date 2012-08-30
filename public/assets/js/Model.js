@@ -139,6 +139,10 @@ var Model = Class.extend({
         this.drawGraph();
     },
 
+    getLines : function() {
+        return this.lines;
+    },
+
     _getQuintileLabels : function() {
         var labels = [];
         for (var i=0; i<this.quintiles.length; i++) {
