@@ -268,6 +268,13 @@ var Model = Class.extend({
                 $(books[i]).removeClass("selected").addClass("icon-white");
             }
         }
+
+        if (value == 0) {
+            cell.find('i.icon-ban-circle').removeClass('icon-white');
+        } else {
+            cell.find('i.icon-ban-circle').addClass('icon-white');
+        }
+
         this.update();
     },
 
@@ -309,7 +316,7 @@ var Model = Class.extend({
         head.removeClass("selected");
         head.addClass("icon-white");
         head.attr("data-original-title", "Marcar como jefe de familia");
-        this.table.find('tbody tr[data-index=' + this._headIndex + '] .educationCell i.icon-book').hide();
+        this.table.find('tbody tr[data-index=' + this._headIndex + '] .educationCell i').hide();
         this.family[this._headIndex].head = false;
 
 
@@ -317,7 +324,7 @@ var Model = Class.extend({
         $(elem).addClass("selected");
         $(elem).attr("data-original-title", "Jefe de familia");
         $(elem).tooltip("show");
-        this.table.find('tbody tr[data-index=' + index + '] .educationCell i.icon-book').show();
+        this.table.find('tbody tr[data-index=' + index + '] .educationCell i').show();
         this.family[index].head = true;
         this._headIndex = index;
     },
@@ -332,7 +339,7 @@ var Model = Class.extend({
             spouse.removeClass("selected");
             spouse.addClass("icon-white");
             spouse.attr("data-original-title", "Marcar como cónyuge");
-            this.table.find('tbody tr[data-index=' + this._spouseIndex + '] .educationCell i.icon-book').hide();
+            this.table.find('tbody tr[data-index=' + this._spouseIndex + '] .educationCell i').hide();
             this.family[this._spouseIndex].spouse = false;
         }
 
@@ -342,7 +349,7 @@ var Model = Class.extend({
             $(elem).attr("data-original-title", "Cónyuge");
             $(elem).tooltip("show");
             this.family[index].spouse = true;
-            this.table.find('tbody tr[data-index=' + index + '] .educationCell i.icon-book').show();
+            this.table.find('tbody tr[data-index=' + index + '] .educationCell i').show();
             this._spouseIndex = index;
         }
     },
@@ -374,6 +381,23 @@ var Model = Class.extend({
 
             // education
             var educationCell = $('<td class="educationCell" data-education="'+member.education+'"></td>');
+
+            var banIcon = $('<i class="icon-ban-circle"></i>');
+            banIcon.attr("data-index", -1);
+            if (member.education > 0) {
+                banIcon.addClass('icon-white');
+                banIcon.hover(function() {
+                    $(this).removeClass('icon-white');
+                }, function() {
+                    if (!$(this).hasClass('selected')) {
+                        $(this).addClass('icon-white');
+                    }
+                })
+            }
+            self._addTooltip(banIcon, 'Sin educación');
+
+            educationCell.append(banIcon);
+
             for (var j=0; j<this.education_max; j++) {
                 var bookIcon = $('<i class="icon-book"></i>');
                 bookIcon.attr("data-index", j);
