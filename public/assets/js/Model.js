@@ -309,6 +309,7 @@ var Model = Class.extend({
         head.removeClass("selected");
         head.addClass("icon-white");
         head.attr("data-original-title", "Marcar como jefe de familia");
+        this.table.find('tbody tr[data-index=' + this._headIndex + '] .educationCell i.icon-book').hide();
         this.family[this._headIndex].head = false;
 
 
@@ -316,6 +317,7 @@ var Model = Class.extend({
         $(elem).addClass("selected");
         $(elem).attr("data-original-title", "Jefe de familia");
         $(elem).tooltip("show");
+        this.table.find('tbody tr[data-index=' + index + '] .educationCell i.icon-book').show();
         this.family[index].head = true;
         this._headIndex = index;
     },
@@ -330,6 +332,7 @@ var Model = Class.extend({
             spouse.removeClass("selected");
             spouse.addClass("icon-white");
             spouse.attr("data-original-title", "Marcar como cónyuge");
+            this.table.find('tbody tr[data-index=' + this._spouseIndex + '] .educationCell i.icon-book').hide();
             this.family[this._spouseIndex].spouse = false;
         }
 
@@ -339,6 +342,7 @@ var Model = Class.extend({
             $(elem).attr("data-original-title", "Cónyuge");
             $(elem).tooltip("show");
             this.family[index].spouse = true;
+            this.table.find('tbody tr[data-index=' + index + '] .educationCell i.icon-book').show();
             this._spouseIndex = index;
         }
     },
@@ -425,7 +429,17 @@ var Model = Class.extend({
                     }
                 });
             });
+
+            // Hide eductation level for non-head and non-spouse members
+            if (!member.head && !member.spouse) {
+                educationCell.find("i").hide();
+            }
+
+
             row.append(educationCell);
+
+
+
 
             // icons
             var iconsCell = $('<td class="iconsCell"></td>');
