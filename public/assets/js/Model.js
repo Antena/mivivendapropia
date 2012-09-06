@@ -42,97 +42,6 @@ var Model = Class.extend({
             { label: "Cuyo", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#542437", betas:[-0.1263849, 0.0500968, 0.0791209, 0.2053978, 0.2741182] }
         ];
 
-        // Betas
-        this.betas = {
-            'kids_under' :	    [-0.0552942, -0.0724264, -0.0676516, -0.1238898, -0.1048889],
-            'hh_size_rec' :	    [-0.0023377, 0.0323916, 0.0401051, 0.0701396, 0.0818841],
-            'female_head' :	    [0.0579161, 0.1363147, 0.0968277, 0.1411157, 0.113301],
-            'no_spouse'	:       [0.1785973, 0.2112762, 0.18479, 0.0902038, 0.1820364],
-            'age_head' :	    [0.0151484, 0.0117505, 0.0112098, 0.0091149, 0.0088118],
-            'primary1' :	    [0.3691645, 0.3546022, 0.3352214, 0.2212738, 0.1502868],
-            'secondary1' :	    [0.7411031, 0.7009255, 0.5833902, 0.4162107, 0.3224738],
-            'superior' : 	    [0.9295534, 0.7964591, 0.6478768, 0.4710252, 0.3678398],
-            'age_spouse' : 	    [0.0148958, 0.0162987, 0.0131473, 0.00978, 0.0070064],
-            'primary_s1' :	    [0.2339917, 0.2231546, 0.1527139, 0.0368146, 0.1216812],
-            'secondary_s1' :	[0.4687513, 0.428688, 0.3537227, 0.2012458, 0.2001659],
-            'superior_s' :	    [0.6186099, 0.5405665, 0.4351879, 0.2628354, 0.2698848],
-            'dependency' :	    [-0.0623365, -0.0247185, -0.0140593, -0.0104448, -0.0227905],
-            'informal' :	    [-0.1582498, -0.2107423, -0.211962, -0.1647949, -0.1285843],
-            'self_emplo' :	    [-0.114136, -0.0870153, -0.0864016, -0.0115352, 0.0729184],
-            'underwork' :	    [-0.1067573, -0.1233403, -0.1025092, -0.0541063, -0.0411415],
-            'professional' :	[0.1668647, 0.2194196, 0.1622139, 0.1078264, 0.0983834],
-            'technical' :	    [0.2593433, 0.1185242, 0.0151724, 0.0171033, -0.096317],
-            'operative' :	    [0.1228025, 0.0764848, -0.0022399, -0.0265577, -0.1105195],
-            'migrant_int' :	    [0.1509235, 0.2430211, 0.3265385, 0.3046819, 0.1584822],
-            'migrant_li' :	    [-0.155683, -0.3397514, -0.5032866, -0.4913091, -0.2046765],
-            'migrant_pcia' :	[0.0140841, 0.0257115, 0.0057317, 0.0100007, 0.0397625],
-            'date_1' :	        [-0.1530169, -0.1198072, -0.1038722, 0.0122366, 0.152288],
-            'date_2' :	        [-0.11844, -0.1285798, -0.083965, -0.1065781, 0.213533],
-            'date_3' :	        [-0.1664472, -0.1627317, -0.1672925, -0.0688032, 0.121293],
-            'date_4' :	        [-0.1206949, -0.0987936, -0.1612381, -0.0675086, 0.1067232],
-            'date_5' :	        [-0.0807532, -0.1015299, -0.050563, -0.1035009, 0.1078071],
-            'date_6' :	        [-0.1060111, -0.086336, -0.0463026, -0.0750814, 0.2230301],
-            'date_7' :	        [-0.1116732, -0.1207421, -0.0601955, -0.059916, 0.1762721],
-            'date_8' :	        [-0.1099016, -0.1011094, -0.0611252, -0.1104454, 0.1151243],
-            'date_9' :	        [-0.073683, -0.1381076, -0.0558143, -0.0056311, 0.0545869],
-            'date_10' :	        [-0.0729863, -0.1242891, -0.0658848, -0.0921924, 0.1395846],
-            'date_11' :	        [-0.0536967, -0.1152502, -0.0800652, -0.0428599, 0.1007641],
-            'date_12' :	        [-0.1323931, -0.0515223, -0.1268832, -0.0671901, 0.1382999],
-            'date_13' :	        [-0.1163343, -0.050348, -0.0295294, -0.0391195, 0.1392248],
-            'date_14' :	        [-0.0923674, -0.0890898, -0.0048444, -0.0329602, 0.1314991],
-            'date_15' :	        [-0.0546819, -0.0253567, -0.0585662, -0.033073, 0.1331986],
-            'date_16' :	        [-0.03069, -0.0029039, -0.0160711, -0.0007312, 0.1395641],
-            'date_17' :	        [-0.0640081, -0.0320034, -0.0594442, -0.0525895, 0.1046726],
-            'date_18' :	        [-0.019834, -0.0334281, -0.0430564, -0.0100774, 0.0671426],
-            'date_19' :	        [0.027353, -0.011602, -0.0416764, -0.0101565, 0.1133455],
-            'date_20' :	        [0.0135513, 0.0412226, -0.0300768, -0.0246226, 0.1021769],
-            'date_21' :	        [0.0423607, 0.0087483, 0.0146469, -0.0709856, 0.1389234],
-            'date_22' :	        [0.0111858, -0.0175754, -0.0308232, -0.0303891, 0.0634853],
-            'date_23' :	        [-0.021264, 0.0060682, -0.0045944, -0.0387338, 0.0814024],
-            'date_24' :	        [0.016978, -0.0013971, -0.0137943, -0.0236724, 0.1566265],
-            'date_25' :	        [0.0394738,	0.0130176, -0.009074, -0.0590055, 0.0420641],
-            'date_26' :         [0.0165548, -0.0351283, -0.0154274, -0.0877058, 0.0482264],
-            'date_27' :         [0.0332834, -0.0247828, -0.0983688, -0.0368986, 0.054491],
-            'date_28' :	        [-0.0393113, -0.0370035, -0.0236361, 0.0221783, 0.0725553],
-            'date_29' :	        [-0.0117356, -0.0343339, -0.0920253, 0.0127868, 0.0310364],
-            'date_30' :	        [0.0411693, 0.0127501, -0.093952, -0.0588343, 0.0724097]
-        };
-
-        this.means = {
-            'date_1' :          [0.0185977, 0.0185877, 0.0186075, 0.0186034, 0.0186275],
-            'date_2' :          [0.0256048, 0.0255691, 0.0256073, 0.0256016, 0.0256348],
-            'date_3' :          [0.0248591, 0.0248348, 0.0248612, 0.0248558, 0.024888],
-            'date_4' :          [0.0261969, 0.0261938, 0.0261668, 0.026194, 0.0262169],
-            'date_5' :          [0.0274141, 0.0274542, 0.0273956, 0.0274006, 0.027458],
-            'date_6' :          [0.0272277, 0.0272021, 0.027231, 0.0272251, 0.0272603],
-            'date_7' :          [0.0273154, 0.0273007, 0.0273298, 0.0274883, 0.0271835],
-            'date_8' :          [0.0271509, 0.0272021, 0.0273517, 0.026896, 0.0271835],
-            'date_9' :          [0.028083, 0.0280679, 0.0280978, 0.0280916, 0.028128],
-            'date_10' :         [0.0280501, 0.0280241, 0.0280539, 0.0280477, 0.0280841],
-            'date_11' :         [0.0273812, 0.0274213, 0.0273298, 0.0275322, 0.0272713],
-            'date_12' :         [0.0284997, 0.0284844, 0.0285147, 0.0285084, 0.0285344],
-            'date_13' :         [0.0355396, 0.0355205, 0.0355364, 0.0355396, 0.0355856],
-            'date_14' :         [0.0377876, 0.0376138, 0.0377307, 0.0377224, 0.0377713],
-            'date_15' :         [0.0373928, 0.0373837, 0.0374125, 0.0374043, 0.0374418],
-            'date_16' :         [0.0361866, 0.0361672, 0.0364799, 0.0359235, 0.0362446],
-            'date_17' :         [0.0353751, 0.0353233, 0.0353608, 0.0353641, 0.0353989],
-            'date_18' :         [0.0371845, 0.0371426, 0.0371821, 0.0372178, 0.0371892],
-            'date_19' :         [0.037327, 0.0374056, 0.0371382, 0.0373056, 0.0373429],
-            'date_20' :         [0.0374696, 0.0374494, 0.0374893, 0.0378211, 0.0371782],
-            'date_21' :         [0.0372832, 0.0372741, 0.0373028, 0.0372836, 0.0373429],
-            'date_22' :         [0.0364498, 0.0364521, 0.0364141, 0.03645, 0.0364972],
-            'date_23' :         [0.03668, 0.0369124, 0.0364141, 0.0366365, 0.0366949],
-            'date_24' :         [0.0371625, 0.0371755, 0.0371602, 0.0372069, 0.0371562],
-            'date_25' :         [0.0366143, 0.0365946, 0.0366335, 0.0366803, 0.0366071],
-            'date_26' :         [0.0358467, 0.0358274, 0.0358655, 0.0359344, 0.0358273],
-            'date_27' :         [0.0365046, 0.036474, 0.0365238, 0.0366474, 0.0364094],
-            'date_28' :         [0.0365156, 0.0365617, 0.036458, 0.0365158, 0.0365631],
-            'date_29' :         [0.0353313, 0.0353013, 0.0355912, 0.0350789, 0.0353769],
-            'date_30' :         [0.034783, 0.0350712, 0.0346367, 0.0347059, 0.0347729]
-        };
-
-        this.cons =             [-0.7150742, -0.6934208, -0.2994806, 0.0825679, 0.1987445];
-
         this.resetVars();
         this.update();
         this.drawTable();
@@ -628,69 +537,72 @@ var Model = Class.extend({
 
     _calculate : function(quintile) {
         var self = this;
+        var betas = getBetas();
+        var means = getMeans();
+        var cons = getCons();
         var data =[];
         for (var i=0; i<self.quintiles.length; i++) {
             var sum = 0;
 
             // User input vars
-            sum += self.kids_under * self.betas.kids_under[i];
-            sum += self.hh_size_rec * self.betas.hh_size_rec[i];
-            sum += self.female_head * self.betas.female_head[i];
-            sum += self.no_spouse * self.betas.no_spouse[i];
-            sum += self.age_head * self.betas.age_head[i];
-            sum += self.primary1 * self.betas.primary1[i];
-            sum += self.secondary1 * self.betas.secondary1[i];
-            sum += self.superior * self.betas.superior[i];
-            sum += self.age_spouse * self.betas.age_spouse[i];
-            sum += self.primary_s1 * self.betas.primary_s1[i];
-            sum += self.secondary_s1 * self.betas.secondary_s1[i];
-            sum += self.superior_s * self.betas.superior_s[i];
-            sum += self.dependency * self.betas.dependency[i];
-            sum += self.informal * self.betas.informal[i];
-            sum += self.self_emplo * self.betas.self_emplo[i];
-            sum += self.underwork * self.betas.underwork[i];
-            sum += self.professional * self.betas.professional[i];
-            sum += self.technical * self.betas.technical[i];
-            sum += self.operative * self.betas.operative[i];
-            sum += self.migrant_int * self.betas.migrant_int[i];
-            sum += self.migrant_li * self.betas.migrant_li[i];
-            sum += self.migrant_pcia * self.betas.kids_under[i];
+            sum += self.kids_under * betas.kids_under[i];
+            sum += self.hh_size_rec * betas.hh_size_rec[i];
+            sum += self.female_head * betas.female_head[i];
+            sum += self.no_spouse * betas.no_spouse[i];
+            sum += self.age_head * betas.age_head[i];
+            sum += self.primary1 * betas.primary1[i];
+            sum += self.secondary1 * betas.secondary1[i];
+            sum += self.superior * betas.superior[i];
+            sum += self.age_spouse * betas.age_spouse[i];
+            sum += self.primary_s1 * betas.primary_s1[i];
+            sum += self.secondary_s1 * betas.secondary_s1[i];
+            sum += self.superior_s * betas.superior_s[i];
+            sum += self.dependency * betas.dependency[i];
+            sum += self.informal * betas.informal[i];
+            sum += self.self_emplo * betas.self_emplo[i];
+            sum += self.underwork * betas.underwork[i];
+            sum += self.professional * betas.professional[i];
+            sum += self.technical * betas.technical[i];
+            sum += self.operative * betas.operative[i];
+            sum += self.migrant_int * betas.migrant_int[i];
+            sum += self.migrant_li * betas.migrant_li[i];
+            sum += self.migrant_pcia * betas.kids_under[i];
 
             // Fixed mean vars
-            sum += self.means.date_1[i] * self.betas.date_1[i];
-            sum += self.means.date_2[i] * self.betas.date_2[i];
-            sum += self.means.date_3[i] * self.betas.date_3[i];
-            sum += self.means.date_4[i] * self.betas.date_4[i];
-            sum += self.means.date_5[i] * self.betas.date_5[i];
-            sum += self.means.date_6[i] * self.betas.date_6[i];
-            sum += self.means.date_7[i] * self.betas.date_7[i];
-            sum += self.means.date_8[i] * self.betas.date_8[i];
-            sum += self.means.date_9[i] * self.betas.date_9[i];
-            sum += self.means.date_10[i] * self.betas.date_10[i];
-            sum += self.means.date_11[i] * self.betas.date_11[i];
-            sum += self.means.date_12[i] * self.betas.date_12[i];
-            sum += self.means.date_13[i] * self.betas.date_13[i];
-            sum += self.means.date_14[i] * self.betas.date_14[i];
-            sum += self.means.date_15[i] * self.betas.date_15[i];
-            sum += self.means.date_16[i] * self.betas.date_16[i];
-            sum += self.means.date_17[i] * self.betas.date_17[i];
-            sum += self.means.date_18[i] * self.betas.date_18[i];
-            sum += self.means.date_19[i] * self.betas.date_19[i];
-            sum += self.means.date_20[i] * self.betas.date_20[i];
-            sum += self.means.date_21[i] * self.betas.date_21[i];
-            sum += self.means.date_22[i] * self.betas.date_22[i];
-            sum += self.means.date_23[i] * self.betas.date_23[i];
-            sum += self.means.date_24[i] * self.betas.date_24[i];
-            sum += self.means.date_25[i] * self.betas.date_25[i];
-            sum += self.means.date_26[i] * self.betas.date_26[i];
-            sum += self.means.date_27[i] * self.betas.date_27[i];
-            sum += self.means.date_28[i] * self.betas.date_28[i];
-            sum += self.means.date_29[i] * self.betas.date_29[i];
-            sum += self.means.date_30[i] * self.betas.date_30[i];
+            sum += means.date_1[i] * betas.date_1[i];
+            sum += means.date_2[i] * betas.date_2[i];
+            sum += means.date_3[i] * betas.date_3[i];
+            sum += means.date_4[i] * betas.date_4[i];
+            sum += means.date_5[i] * betas.date_5[i];
+            sum += means.date_6[i] * betas.date_6[i];
+            sum += means.date_7[i] * betas.date_7[i];
+            sum += means.date_8[i] * betas.date_8[i];
+            sum += means.date_9[i] * betas.date_9[i];
+            sum += means.date_10[i] * betas.date_10[i];
+            sum += means.date_11[i] * betas.date_11[i];
+            sum += means.date_12[i] * betas.date_12[i];
+            sum += means.date_13[i] * betas.date_13[i];
+            sum += means.date_14[i] * betas.date_14[i];
+            sum += means.date_15[i] * betas.date_15[i];
+            sum += means.date_16[i] * betas.date_16[i];
+            sum += means.date_17[i] * betas.date_17[i];
+            sum += means.date_18[i] * betas.date_18[i];
+            sum += means.date_19[i] * betas.date_19[i];
+            sum += means.date_20[i] * betas.date_20[i];
+            sum += means.date_21[i] * betas.date_21[i];
+            sum += means.date_22[i] * betas.date_22[i];
+            sum += means.date_23[i] * betas.date_23[i];
+            sum += means.date_24[i] * betas.date_24[i];
+            sum += means.date_25[i] * betas.date_25[i];
+            sum += means.date_26[i] * betas.date_26[i];
+            sum += means.date_27[i] * betas.date_27[i];
+            sum += means.date_28[i] * betas.date_28[i];
+            sum += means.date_29[i] * betas.date_29[i];
+            sum += means.date_30[i] * betas.date_30[i];
 
             // Constants
             sum += self.lines[quintile].betas[i];
-            sum += self.cons[i];
+            sum += cons[i];
 
             var norm = new NormalDistribution(0, 1);
             var value = norm.cumulativeDensity(sum);
