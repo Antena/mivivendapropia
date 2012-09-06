@@ -99,3 +99,7 @@ function getMeans() {
 function getCons() {
     return database.cons;
 }
+
+function getModels() {
+    return 5;
+}

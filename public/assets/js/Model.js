@@ -37,9 +37,10 @@ var Model = Class.extend({
         this.lines = [
             { label: "GBA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#BBD078", betas:[-0.5446819, -0.3565835, -0.2933651, -0.1046974, -0.0267171] },
             { label: "Pampeana", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#ECD078", betas:[-0.2498533, -0.0661845, 0.0385695, 0.1582287, 0.2019052] },
-            { label: "NOA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#D95B43", betas:[-0.5828933, -0.4135258, -0.2966691, -0.1914041, -0.0710128] },
+            { label: "Cuyo", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#542437", betas:[-0.1263849, 0.0500968, 0.0791209, 0.2053978, 0.2741182] },
             { label: "NEA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#C02942", betas:[-0.4774271, -0.2929658, -0.2015828, -0.013111, -0.0397004] },
-            { label: "Cuyo", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#542437", betas:[-0.1263849, 0.0500968, 0.0791209, 0.2053978, 0.2741182] }
+            { label: "NOA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#D95B43", betas:[-0.5828933, -0.4135258, -0.2966691, -0.1914041, -0.0710128] },
+            { label: "Patagonia", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#CD34B2", betas:[-0.5828933, -0.4135258, -0.2966691, -0.1914041, -0.0710128] }
         ];
 
         this.resetVars();
@@ -535,74 +536,81 @@ var Model = Class.extend({
         }
     },
 
-    _calculate : function(quintile) {
+    _calculate : function(regionIndex) {
         var self = this;
         var betas = getBetas();
         var means = getMeans();
         var cons = getCons();
+        var valuesPerQuintile = getModels() / self.quintiles.length;
+        var offsetIndex = valuesPerQuintile == 1 ? 0 : regionIndex;
+
         var data =[];
         for (var i=0; i<self.quintiles.length; i++) {
             var sum = 0;
 
+            var index = i * valuesPerQuintile + offsetIndex;
+
             // User input vars
-            sum += self.kids_under * betas.kids_under[i];
-            sum += self.hh_size_rec * betas.hh_size_rec[i];
-            sum += self.female_head * betas.female_head[i];
-            sum += self.no_spouse * betas.no_spouse[i];
-            sum += self.age_head * betas.age_head[i];
-            sum += self.primary1 * betas.primary1[i];
-            sum += self.secondary1 * betas.secondary1[i];
-            sum += self.superior * betas.superior[i];
-            sum += self.age_spouse * betas.age_spouse[i];
-            sum += self.primary_s1 * betas.primary_s1[i];
-            sum += self.secondary_s1 * betas.secondary_s1[i];
-            sum += self.superior_s * betas.superior_s[i];
-            sum += self.dependency * betas.dependency[i];
-            sum += self.informal * betas.informal[i];
-            sum += self.self_emplo * betas.self_emplo[i];
-            sum += self.underwork * betas.underwork[i];
-            sum += self.professional * betas.professional[i];
-            sum += self.technical * betas.technical[i];
-            sum += self.operative * betas.operative[i];
-            sum += self.migrant_int * betas.migrant_int[i];
-            sum += self.migrant_li * betas.migrant_li[i];
-            sum += self.migrant_pcia * betas.kids_under[i];
+            sum += self.kids_under * betas.kids_under[index];
+            sum += self.hh_size_rec * betas.hh_size_rec[index];
+            sum += self.female_head * betas.female_head[index];
+            sum += self.no_spouse * betas.no_spouse[index];
+            sum += self.age_head * betas.age_head[index];
+            sum += self.primary1 * betas.primary1[index];
+            sum += self.secondary1 * betas.secondary1[index];
+            sum += self.superior * betas.superior[index];
+            sum += self.age_spouse * betas.age_spouse[index];
+            sum += self.primary_s1 * betas.primary_s1[index];
+            sum += self.secondary_s1 * betas.secondary_s1[index];
+            sum += self.superior_s * betas.superior_s[index];
+            sum += self.dependency * betas.dependency[index];
+            sum += self.informal * betas.informal[index];
+            sum += self.self_emplo * betas.self_emplo[index];
+            sum += self.underwork * betas.underwork[index];
+            sum += self.professional * betas.professional[index];
+            sum += self.technical * betas.technical[index];
+            sum += self.operative * betas.operative[index];
+            sum += self.migrant_int * betas.migrant_int[index];
+            sum += self.migrant_li * betas.migrant_li[index];
+            sum += self.migrant_pcia * betas.kids_under[index];
 
             // Fixed mean vars
-            sum += means.date_1[i] * betas.date_1[i];
-            sum += means.date_2[i] * betas.date_2[i];
-            sum += means.date_3[i] * betas.date_3[i];
-            sum += means.date_4[i] * betas.date_4[i];
-            sum += means.date_5[i] * betas.date_5[i];
-            sum += means.date_6[i] * betas.date_6[i];
-            sum += means.date_7[i] * betas.date_7[i];
-            sum += means.date_8[i] * betas.date_8[i];
-            sum += means.date_9[i] * betas.date_9[i];
-            sum += means.date_10[i] * betas.date_10[i];
-            sum += means.date_11[i] * betas.date_11[i];
-            sum += means.date_12[i] * betas.date_12[i];
-            sum += means.date_13[i] * betas.date_13[i];
-            sum += means.date_14[i] * betas.date_14[i];
-            sum += means.date_15[i] * betas.date_15[i];
-            sum += means.date_16[i] * betas.date_16[i];
-            sum += means.date_17[i] * betas.date_17[i];
-            sum += means.date_18[i] * betas.date_18[i];
-            sum += means.date_19[i] * betas.date_19[i];
-            sum += means.date_20[i] * betas.date_20[i];
-            sum += means.date_21[i] * betas.date_21[i];
-            sum += means.date_22[i] * betas.date_22[i];
-            sum += means.date_23[i] * betas.date_23[i];
-            sum += means.date_24[i] * betas.date_24[i];
-            sum += means.date_25[i] * betas.date_25[i];
-            sum += means.date_26[i] * betas.date_26[i];
-            sum += means.date_27[i] * betas.date_27[i];
-            sum += means.date_28[i] * betas.date_28[i];
-            sum += means.date_29[i] * betas.date_29[i];
-            sum += means.date_30[i] * betas.date_30[i];
+            sum += means.date_1[index] * betas.date_1[index];
+            sum += means.date_2[index] * betas.date_2[index];
+            sum += means.date_3[index] * betas.date_3[index];
+            sum += means.date_4[index] * betas.date_4[index];
+            sum += means.date_5[index] * betas.date_5[index];
+            sum += means.date_6[index] * betas.date_6[index];
+            sum += means.date_7[index] * betas.date_7[index];
+            sum += means.date_8[index] * betas.date_8[index];
+            sum += means.date_9[index] * betas.date_9[index];
+            sum += means.date_10[index] * betas.date_10[index];
+            sum += means.date_11[index] * betas.date_11[index];
+            sum += means.date_12[index] * betas.date_12[index];
+            sum += means.date_13[index] * betas.date_13[index];
+            sum += means.date_14[index] * betas.date_14[index];
+            sum += means.date_15[index] * betas.date_15[index];
+            sum += means.date_16[index] * betas.date_16[index];
+            sum += means.date_17[index] * betas.date_17[index];
+            sum += means.date_18[index] * betas.date_18[index];
+            sum += means.date_19[index] * betas.date_19[index];
+            sum += means.date_20[index] * betas.date_20[index];
+            sum += means.date_21[index] * betas.date_21[index];
+            sum += means.date_22[index] * betas.date_22[index];
+            sum += means.date_23[index] * betas.date_23[index];
+            sum += means.date_24[index] * betas.date_24[index];
+            sum += means.date_25[index] * betas.date_25[index];
+            sum += means.date_26[index] * betas.date_26[index];
+            sum += means.date_27[index] * betas.date_27[index];
+            sum += means.date_28[index] * betas.date_28[index];
+            sum += means.date_29[index] * betas.date_29[index];
+            sum += means.date_30[index] * betas.date_30[index];
 
             // Constants
-            sum += self.lines[quintile].betas[i];
-            sum += cons[i];
+            if (valuesPerQuintile == 1) {
+                sum += self.lines[regionIndex].betas[index];
+            }
+            sum += cons[index];
 
             var norm = new NormalDistribution(0, 1);
             var value = norm.cumulativeDensity(sum);
@@ -611,6 +619,7 @@ var Model = Class.extend({
                 'quintile' : self.quintiles[i].label
             });
         }
+
 
         return data;
     },

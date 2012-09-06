@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Mi vivienda propia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/style.less" rel="stylesheet/less" type="text/css">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="/assets/js/html5.js"></script>
+    <![endif]-->
+
+    <script src="/assets/js/jquery.js"></script>
+    <script src="/assets/js/jquery-inheritance.js"></script>
+    <script src="/assets/js/bootstrap-tooltip.js"></script>
+    <script src="/assets/js/bootstrap-button.js"></script>
+    <script src="/assets/js/bootstrap-tab.js"></script>
+    <script src="/assets/js/d3.v2.min.js"></script>
+    <script src="/assets/js/jstat-1.0.0.min.js"></script>
+    <script src="/assets/js/less-1.3.0.min.js"></script>
+    <script src="/assets/js/Database2.js"></script>
+    <script src="/assets/js/Model.js"></script>
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/assets/ico/favicon.ico">
+</head>
+
+<body>
+
+<div id="content">
+
+    <div id="graph">
+        <div id="legend" class="version2">
+            <ul>
+                <li class="GBA">GBA</li>
+                <li class="Pampeana">Pampeana</li>
+                <li class="NOA">NOA</li>
+                <li class="NEA">NEA</li>
+                <li class="Cuyo" style="color: #f5f5f5;">Cuyo</li>
+                <li class="Patagonia" style="color: #f5f5f5;">Patagonia</li>
+            </ul>
+        </div>
+    </div>
+    <div id="info">
+
+        <ul id="myTab" class="nav nav-tabs">
+            <li class="active">
+                <a href="#members" data-toggle="tab">Grupo familiar</a>
+            </li>
+            <li>
+                <a href="#head" data-toggle="tab">Jefe de familia</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="members">
+                <div>
+                    <h3>Mi grupo familiar</h3>
+                    <p></p>
+                    <p>
+                        Arme su propio grupo familiar:<br/>
+                        Agruegue miembros con <i class="icon-plus-sign"></i>.<br/>
+                        Edite su edad y nivel de educación completado.<br/>
+                        Marque con <i class="icon-user"></i> al jefe de familia y con <i class="icon-heart"></i> al cónyuge (de haberlo).<br/>
+                    </p>
+                </div>
+                <table id="family" class="table  table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <th style="width: 7px;">#</th>
+                        <th style="width: 35px;">Edad</th>
+                        <th>Educación</th>
+                        <th style="width: 65px;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th><i class="icon-plus-sign" id="addMember" rel="tooltip" title="Agregar un nuevo miembro"></i></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="head">
+                <h3 style="line-height: 20px;">Trabajo del jefe de familia</h3>
+                <p></p>
+                <label>El jefe/jefa de familia es</label>
+
+                <div class="btn-group female_head" data-toggle="buttons-radio">
+                    <button data-value="0" class="btn btn-small active">Hombre</button>
+                    <button data-value="1" class="btn btn-small">Mujer</button>
+                </div>
+
+                <div class="btn-group migrant" data-toggle="buttons-radio" style="margin-bottom: 0px;">
+                    <label>¿Es inmigrante?</label>
+                    <select class="span2">
+                        <option>No</option>
+                        <option class="migrant_int">Sí, internacional</option>
+                        <option class="migrant_li">Sí, limítrofe</option>
+                        <option class="migrant_pcia">Sí, de otra provincia</option>
+                    </select>
+                </div>
+
+                <div class="btn-group informal" data-toggle="buttons-radio">
+                    <label>¿Su trabajo es informal?</label>
+                    <button data-value="1" class="btn btn-small">Sí</button>
+                    <button data-value="0" class="btn btn-small active">No</button>
+                </div>
+
+                <div class="btn-group self_emplo" data-toggle="buttons-radio">
+                    <label>¿Es auto-empleado?</label>
+                    <button data-value="1" class="btn btn-small">Sí</button>
+                    <button data-value="0" class="btn btn-small active">No</button>
+                </div>
+
+                <div class="btn-group underwork" data-toggle="buttons-radio">
+                    <label>¿Es sub-empleado?</label>
+                    <button data-value="1" class="btn btn-small">Sí</button>
+                    <button data-value="0" class="btn btn-small active">No</button>
+                </div>
+
+                <div class="btn-group job_type" data-toggle="buttons-radio" style="margin-bottom: 0px;">
+                    <label>Rubro</label>
+                    <select class="span2">
+                        <option class="unskilled">No Calificado</option>
+                        <option class="professional">Profesional</option>
+                        <option class="technical">Técnico</option>
+                        <option class="operative">Operativo</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="variables">
+    <table class="table table-striped table-bordered table-condensed" style="width: 50%; margin: 0 auto; margin-bottom: 20px">
+        <thead>
+        <tr>
+            <th style="width: 50%">Variable</th>
+            <th>Valor</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>kids_under</td>
+            <td class="kids_under">1</td>
+        </tr>
+        <tr>
+            <td>hh_size_rec</td>
+            <td class="hh_size_rec">4</td>
+        </tr>
+        <tr>
+            <td>female_head</td>
+            <td class="female_head">--</td>
+        </tr>
+        <tr>
+            <td>no_spouse</td>
+            <td class="no_spouse">0</td>
+        </tr>
+        <tr>
+            <td>age_head</td>
+            <td class="age_head">45</td>
+        </tr>
+        <tr>
+            <td>primary1</td>
+            <td class="primary1">0</td>
+        </tr>
+        <tr>
+            <td>secondary1</td>
+            <td class="secondary1">1</td>
+        </tr>
+        <tr>
+            <td>superior</td>
+            <td class="superior">0</td>
+        </tr>
+        <tr>
+            <td>age_spouse</td>
+            <td class="age_spouse">40</td>
+        </tr>
+        <tr>
+            <td>primary_s1</td>
+            <td class="primary_s1">0</td>
+        </tr>
+        <tr>
+            <td>secondary_s1</td>
+            <td class="secondary_s1">1</td>
+        </tr>
+        <tr>
+            <td>superior_s</td>
+            <td class="superior_s">0</td>
+        </tr>
+        <tr>
+            <td>dependency</td>
+            <td class="dependency">1/3</td>
+        </tr>
+        <tr>
+            <td>informal</td>
+            <td class="informal">--</td>
+        </tr>
+        <tr>
+            <td>self_emplo</td>
+            <td class="self_emplo">--</td>
+        </tr>
+        <tr>
+            <td>underwork</td>
+            <td class="underwork">--</td>
+        </tr>
+        <tr>
+            <td>professional</td>
+            <td class="professional">--</td>
+        </tr>
+        <tr>
+            <td>technical</td>
+            <td class="technical">--</td>
+        </tr>
+        <tr>
+            <td>operative</td>
+            <td class="operative">--</td>
+        </tr>
+        <tr>
+            <td>migrant_int</td>
+            <td class="migrant_int">--</td>
+        </tr>
+        <tr>
+            <td>migrant_li</td>
+            <td class="migrant_li">--</td>
+        </tr>
+        <tr>
+            <td>migrant_pcia</td>
+            <td class="migrant_pcia">--</td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+
+    var model = null;
+
+    $("#addMember").click(function() {
+        model.addMember();
+    }).tooltip({placement:'bottom'});
+
+    $("#head .btn").change(function() {
+        model.update();
+    });
+
+    $("#head select").change(function() {
+        model.update();
+    });
+
+
+    $(function() {
+        var family = [
+            { age: 45, education: 3, head: true, spouse: false },
+            { age: 40, education: 2, head: false, spouse: true },
+            { age: 11, education: 1, head: false, spouse: false },
+            { age: 3, education: 0, head: false, spouse: false }
+        ];
+
+        model = new Model(family, "family");
+
+        var lines = model.getLines();
+
+        for (var i=0; i<lines.length; i++) {
+            $("#legend ." + lines[i].label).css("background-color", lines[i].color);
+        }
+    });
+</script>
+
+</body>
+</html>
