@@ -679,6 +679,10 @@ function getCons() {
     return database.cons;
 }
 
+function getRegions() {
+    return [];
+}
+
 function getModels() {
     return 30;
 }

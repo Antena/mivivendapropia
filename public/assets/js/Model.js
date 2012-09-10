@@ -35,12 +35,12 @@ var Model = Class.extend({
         ];
 
         this.lines = [
-            { label: "GBA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#BBD078", betas:[-0.5446819, -0.3565835, -0.2933651, -0.1046974, -0.0267171] },
-            { label: "Pampeana", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#ECD078", betas:[-0.2498533, -0.0661845, 0.0385695, 0.1582287, 0.2019052] },
-            { label: "Cuyo", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#542437", betas:[-0.1263849, 0.0500968, 0.0791209, 0.2053978, 0.2741182] },
-            { label: "NEA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#C02942", betas:[-0.4774271, -0.2929658, -0.2015828, -0.013111, -0.0397004] },
-            { label: "NOA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#D95B43", betas:[-0.5828933, -0.4135258, -0.2966691, -0.1914041, -0.0710128] },
-            { label: "Patagonia", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#CD34B2", betas:[-0.5828933, -0.4135258, -0.2966691, -0.1914041, -0.0710128] }
+            { label: "GBA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#BBD078" },
+            { label: "Pampeana", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#ECD078" },
+            { label: "Cuyo", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#542437" },
+            { label: "NEA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#C02942" },
+            { label: "NOA", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#D95B43" },
+            { label: "Patagonia", dataLinesGroup: null, dataCirclesGroup:null, data: null, color:"#0074CC" }
         ];
 
         this.resetVars();
@@ -541,6 +541,7 @@ var Model = Class.extend({
         var betas = getBetas();
         var means = getMeans();
         var cons = getCons();
+        var regions = getRegions();
         var valuesPerQuintile = getModels() / self.quintiles.length;
         var offsetIndex = valuesPerQuintile == 1 ? 0 : regionIndex;
 
@@ -608,7 +609,8 @@ var Model = Class.extend({
 
             // Constants
             if (valuesPerQuintile == 1) {
-                sum += self.lines[regionIndex].betas[index];
+                sum += regions[self.lines[regionIndex].label][index];
+//                sum += self.lines[regionIndex].betas[index];
             }
             sum += cons[index];
 
@@ -620,28 +622,6 @@ var Model = Class.extend({
             });
         }
 
-
-        return data;
-    },
-
-    _calculateDummy: function(quintile) {
-        var self = this;
-        var fullData = [
-            [0.696894216, 0.839166815, 0.898347722, 0.934274396, 0.956534191],
-            [0.683417662, 0.824873081, 0.897759671, 0.922442901, 0.952293946],
-            [0.719967006, 0.854208897, 0.913712329, 0.945199623, 0.955324115],
-            [0.824792775, 0.918901363, 0.949981987, 0.965506051, 0.977924041],
-            [0.791121081, 0.899980128, 0.945657035, 0.961747072, 0.973836436],
-            [0.855466502, 0.91111014, 0.941273947, 0.94663874, 0.958941044]
-        ];
-
-        var data =[];
-        for (var i=0; i<self.quintiles.length; i++) {
-            data.push({
-                'value' : fullData[quintile][i] * 100,
-                'quintile' : self.quintiles[i].label
-            });
-        }
 
         return data;
     },
