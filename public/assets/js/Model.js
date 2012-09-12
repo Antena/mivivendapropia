@@ -683,6 +683,9 @@ var Model = Class.extend({
             .attr('cx', function(d) { return self.x(d.quintile) })
             .attr('cy', function() { return self.y(0) })
             .attr('r', function() { return (region.data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
+            .attr('data-region', region.label)
+            .attr('data-quintile', function(d) { return d.quintile })
+            .attr('data-value', function(d) { return d.value.toFixed(1) })
             .transition()
             .duration(self.transitionDuration)
             .style('opacity', 1)
@@ -694,6 +697,7 @@ var Model = Class.extend({
             .duration(self.transitionDuration)
             .attr('cx', function(d) { return self.x(d.quintile) })
             .attr('cy', function(d) { return self.y(d.value) })
+            .attr('data-value', function(d) { return d.value.toFixed(1) })
             .attr('r', function() { return (region.data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
             .style('opacity', 1);
 
@@ -704,6 +708,16 @@ var Model = Class.extend({
             .attr('cy', function() { return self.y(0) })
             .style("opacity", 1e-6)
             .remove();
+
+        $('svg circle').tipsy({
+            gravity: 'n',
+            offset: 10,
+            html: true,
+            title: function() {
+                return 'Region ' + $(this).attr('data-region') + '<br/>' +
+                    $(this).attr('data-quintile') + ' de ingreso: ' + $(this).attr('data-value') + '%';
+            }
+        });
     },
 
     _generateData : function() {
