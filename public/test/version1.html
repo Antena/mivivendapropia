@@ -42,8 +42,8 @@
             <ul>
                 <li class="GBA">GBA</li>
                 <li class="Pampeana">Pampeana</li>
-                <li class="NOA">NOA</li>
-                <li class="NEA">NEA</li>
+                <li class="NOA" style="color: #f5f5f5;">NOA</li>
+                <li class="NEA" style="color: #f5f5f5;">NEA</li>
                 <li class="Cuyo" style="color: #f5f5f5;">Cuyo</li>
                 <li class="Patagonia" style="color: #f5f5f5;">Patagonia</li>
             </ul>
@@ -104,17 +104,17 @@
                 </div>
 
                 <div class="btn-group migrant" data-toggle="buttons-radio" style="margin-bottom: 0px;">
-                    <label>¿Es inmigrante?</label>
-                    <select class="span2">
-                        <option>No</option>
-                        <option class="migrant_int">Sí, internacional</option>
-                        <option class="migrant_li">Sí, limítrofe</option>
-                        <option class="migrant_pcia">Sí, de otra provincia</option>
+                    <label>Nació en:</label>
+                    <select class="select-full">
+                        <option>La provincia donde vive</option>
+                        <option class="migrant_int">Otro país, no limítrofe</option>
+                        <option class="migrant_li">Algún país limítrofe</option>
+                        <option class="migrant_pcia">En otra provincia</option>
                     </select>
                 </div>
 
                 <div class="btn-group informal" data-toggle="buttons-radio">
-                    <label>¿Su trabajo es informal?</label>
+                    <label>¿Su trabajo es informal (no se realizan descuentos jubilatorios)?</label>
                     <button data-value="1" class="btn btn-small">Sí</button>
                     <button data-value="0" class="btn btn-small active">No</button>
                 </div>
@@ -126,14 +126,14 @@
                 </div>
 
                 <div class="btn-group underwork" data-toggle="buttons-radio">
-                    <label>¿Es sub-empleado?</label>
+                    <label>¿Le gustaría trabajar más de lo que trabaja?</label>
                     <button data-value="1" class="btn btn-small">Sí</button>
                     <button data-value="0" class="btn btn-small active">No</button>
                 </div>
 
                 <div class="btn-group job_type" data-toggle="buttons-radio" style="margin-bottom: 0px;">
                     <label>Rubro</label>
-                    <select class="span2">
+                    <select class="select-full">
                         <option class="unskilled">No Calificado</option>
                         <option class="professional">Profesional</option>
                         <option class="technical">Técnico</option>
