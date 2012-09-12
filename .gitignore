@@ -39,3 +39,6 @@ node_modules
 micasa.iml
 micasa.ipr
 micasa.iws
+
+# Icons
+icons/
