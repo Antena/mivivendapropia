@@ -21,8 +21,8 @@ var Model = Class.extend({
         this.maxDataPointsForDots = 50;
         this.transitionDuration = 1000;
         this.pointRadius = 4;
-        this.yAxisMin = 70;
-        this.yAxisMax = 100;
+        this.yAxisMin = 0.7;
+        this.yAxisMax = 1;
         this.randomMin = 40;
         this.randomMax = 85;
 
@@ -468,7 +468,7 @@ var Model = Class.extend({
     },
 
     _getMinValue : function(data) {
-        var min = 100;
+        var min = 1;
 
         for (var i=0; i<data.length; i++) {
             min = data[i].value < min ? data[i].value : min;
@@ -480,11 +480,11 @@ var Model = Class.extend({
     _draw : function() {
         var self = this;
 
-        var dataMin = 100;
+        var dataMin = 1;
         for (var i=0; i<this.lines.length; i++) {
             var data = self._calculate(i);
             this.lines[i].data = data;
-            dataMin = Math.min(dataMin, Math.floor(self._getMinValue(data)/10) * 10);
+            dataMin = Math.min(dataMin, Math.min(Math.floor(self._getMinValue(data)*10)/10, dataMin));
         }
 
         var max = self.yAxisMax;
@@ -494,7 +494,7 @@ var Model = Class.extend({
         self.y = d3.scale.linear().range([self.graphHeight - self.graphMargin * 2, 0]).domain([min, max]);
 
         var xAxis = d3.svg.axis().scale(self.x).tickSize(self.graphHeight - self.graphMargin * 2).tickPadding(10).ticks(7);
-        var yAxis = d3.svg.axis().scale(self.y).orient('left').tickSize(-self.graphWidth + self.graphMargin * 2).tickPadding(10);
+        var yAxis = d3.svg.axis().scale(self.y).orient('left').tickSize(-self.graphWidth + self.graphMargin * 2).tickPadding(10).tickFormat(d3.format('1%'));
 
         var t = null;
         self.svg = d3.select('#graph').select('svg').select('g');
@@ -617,7 +617,7 @@ var Model = Class.extend({
             var norm = new NormalDistribution(0, 1);
             var value = norm.cumulativeDensity(sum);
             data.push({
-                'value' : value * 100,
+                'value' : value,
                 'quintile' : self.quintiles[i].label
             });
         }
@@ -685,7 +685,7 @@ var Model = Class.extend({
             .attr('r', function() { return (region.data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
             .attr('data-region', region.label)
             .attr('data-quintile', function(d) { return d.quintile })
-            .attr('data-value', function(d) { return d.value.toFixed(1) })
+            .attr('data-value', function(d) { return d.value })
             .transition()
             .duration(self.transitionDuration)
             .style('opacity', 1)
@@ -697,7 +697,7 @@ var Model = Class.extend({
             .duration(self.transitionDuration)
             .attr('cx', function(d) { return self.x(d.quintile) })
             .attr('cy', function(d) { return self.y(d.value) })
-            .attr('data-value', function(d) { return d.value.toFixed(1) })
+            .attr('data-value', function(d) { return d.value })
             .attr('r', function() { return (region.data.length <= self.maxDataPointsForDots) ? self.pointRadius : 0 })
             .style('opacity', 1);
 
@@ -715,7 +715,7 @@ var Model = Class.extend({
             html: true,
             title: function() {
                 return 'Region ' + $(this).attr('data-region') + '<br/>' +
-                    $(this).attr('data-quintile') + ' de ingreso: ' + $(this).attr('data-value') + '%';
+                    $(this).attr('data-quintile') + ' de ingreso: ' + ($(this).attr('data-value')*100).toFixed(1) + '%';
             }
         });
     },
