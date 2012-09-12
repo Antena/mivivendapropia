@@ -15,9 +15,10 @@ var Model = Class.extend({
         this.x = null;
         this.yAxisGroup = null;
         this.xAxisGroup = null;
-        this.graphWidth = 544;
+        this.graphWidth = 574;
         this.graphHeight = 455;
-        this.graphMargin = 40;
+        this.hGraphMargin = 50;
+        this.vGraphMargin = 20;
         this.maxDataPointsForDots = 50;
         this.transitionDuration = 1000;
         this.pointRadius = 4;
@@ -490,11 +491,11 @@ var Model = Class.extend({
         var max = self.yAxisMax;
         var min = Math.min(dataMin, self.yAxisMin);
 
-        self.x = d3.scale.ordinal().rangePoints([0, self.graphWidth - self.graphMargin * 2], 0.5).domain(self._getQuintileLabels());
-        self.y = d3.scale.linear().range([self.graphHeight - self.graphMargin * 2, 0]).domain([min, max]);
+        self.x = d3.scale.ordinal().rangePoints([0, self.graphWidth - self.hGraphMargin * 2], 0.5).domain(self._getQuintileLabels());
+        self.y = d3.scale.linear().range([self.graphHeight - self.vGraphMargin * 2, 0]).domain([min, max]);
 
-        var xAxis = d3.svg.axis().scale(self.x).tickSize(self.graphHeight - self.graphMargin * 2).tickPadding(10).ticks(7);
-        var yAxis = d3.svg.axis().scale(self.y).orient('left').tickSize(-self.graphWidth + self.graphMargin * 2).tickPadding(10).tickFormat(d3.format('1%'));
+        var xAxis = d3.svg.axis().scale(self.x).tickSize(self.graphHeight - self.vGraphMargin * 2).tickPadding(10).ticks(7);
+        var yAxis = d3.svg.axis().scale(self.y).orient('left').tickSize(-self.graphWidth + self.hGraphMargin * 2).tickPadding(10).tickFormat(d3.format('1%'));
 
         var t = null;
         self.svg = d3.select('#graph').select('svg').select('g');
@@ -505,7 +506,7 @@ var Model = Class.extend({
                 .attr('height', self.graphHeight)
                 .attr('class', 'viz')
                 .append('svg:g')
-                .attr('transform', 'translate(' + self.graphMargin + ',' + self.graphMargin + ')');
+                .attr('transform', 'translate(' + self.hGraphMargin + ',' + self.vGraphMargin + ')');
         }
 
         t = self.svg.transition().duration(self.transitionDuration);
