@@ -226,14 +226,14 @@ var Model = Class.extend({
         var head = this.table.find("tbody i.icon-user.selected");
         head.removeClass("selected");
         head.addClass("icon-white");
-        head.attr("data-original-title", "Marcar como jefe de familia");
+        head.attr("data-original-title", "Marcar como jefe/a de familia");
         this.table.find('tbody tr[data-index=' + this._headIndex + '] .educationCell i').hide();
         this.family[this._headIndex].head = false;
 
 
         $(elem).removeClass("icon-white");
         $(elem).addClass("selected");
-        $(elem).attr("data-original-title", "Jefe de familia");
+        $(elem).attr("data-original-title", "Jefe/a de familia");
         $(elem).tooltip("show");
         this.table.find('tbody tr[data-index=' + index + '] .educationCell i').show();
         this.family[index].head = true;
@@ -383,10 +383,10 @@ var Model = Class.extend({
             var headIcon = $('<i class="icon-user"></i>');
             if (!member.head) {
                 headIcon.addClass('icon-white');
-                self._addTooltip(headIcon, "Marcar como jefe de familia");
+                self._addTooltip(headIcon, "Marcar como jefe/a de familia");
             } else {
                 headIcon.addClass("selected");
-                self._addTooltip(headIcon, "Jefe de familia");
+                self._addTooltip(headIcon, "Jefe/a de familia");
             }
 
             headIcon.hover(function() {
