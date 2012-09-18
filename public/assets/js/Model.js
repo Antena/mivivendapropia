@@ -520,6 +520,9 @@ var Model = Class.extend({
         else {
             t.select('.yTick').call(yAxis);
         }
+//        self.svg.append("text")
+//            .attr("transform", "rotate(-90),translate(-300,-40)")
+//            .text("Probabilidad de ser propietario o inquilino formal");
 
         // x ticks and labels
         if (!self.xAxisGroup) {
