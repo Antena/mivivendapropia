@@ -283,10 +283,10 @@
 
     $(function() {
         var family = [
-            { age: 45, education: 3, head: true, spouse: false },
-            { age: 40, education: 2, head: false, spouse: true },
-            { age: 11, education: 1, head: false, spouse: false },
-            { age: 3, education: 0, head: false, spouse: false }
+            { age: 45, education: 3, head: true, spouse: false, sex: "male" },
+            { age: 40, education: 2, head: false, spouse: true, sex: "female" },
+            { age: 11, education: 1, head: false, spouse: false, sex: "male" },
+            { age: 3, education: 0, head: false, spouse: false, sex: "female" }
         ];
 
         model = new Model(family, "family");

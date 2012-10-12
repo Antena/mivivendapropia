@@ -95,7 +95,7 @@ var Model = Class.extend({
         this.migrant_pcia = 0;
 
         this._non_working_age = 0;
-        this._headIndex = null;
+        this._headIndex = 0;
         this._spouseIndex = null;
     },
 
@@ -119,7 +119,9 @@ var Model = Class.extend({
                 this.primary1 = member.education == 1;
                 this.secondary1 = member.education == 2;
                 this.superior = member.education == 3;
+                this.female_head = member.sex == "female";
             }
+
 
             // age_spouse
             if (member.spouse) {
@@ -136,9 +138,6 @@ var Model = Class.extend({
                 this._non_working_age++;
             }
         }
-
-        // female_head
-        this.female_head = parseInt($("#head .female_head .active").attr("data-value"));
 
         // dependency
         this.dependency = this._non_working_age / (this.hh_size_rec - this._non_working_age);
@@ -195,11 +194,6 @@ var Model = Class.extend({
         }
 
         this.family.splice(index, 1);
-        if (this._headIndex == index && this.family.length > 0) {
-            var newHeadIndex = this._spouseIndex == 0 ? 1 : 0;
-            this._headIndex = newHeadIndex;
-            this.setHead(newHeadIndex);
-        }
 
         this.update();
         this.drawTable();
@@ -211,33 +205,28 @@ var Model = Class.extend({
             age:5,
             education:2,
             head:self._headIndex == null,
-            spouse:false
+            spouse:false,
+            sex: "male"
         });
         $("#addMember").tooltip("hide");
         this.update();
         this.drawTable();
     },
 
-    setHead: function(index, elem) {
-        if (index == this._spouseIndex) {
-            return false;
+    setSex : function(index, elem) {
+        var sex = $(elem).attr("class").substr(5);
+
+        var newSex = "male";
+        if (sex == "male") {
+            $(elem).attr("class", "icon-female");
+            newSex = "female";
+            $(elem).attr("data-original-title", "Mujer");
+        } else {
+            $(elem).attr("class", "icon-male");
+            $(elem).attr("data-original-title", "Hombre");
         }
 
-        var head = this.table.find("tbody i.icon-user.selected");
-        head.removeClass("selected");
-        head.addClass("icon-white");
-        head.attr("data-original-title", "Marcar como jefe/a de familia");
-        this.table.find('tbody tr[data-index=' + this._headIndex + '] .educationCell i').hide();
-        this.family[this._headIndex].head = false;
-
-
-        $(elem).removeClass("icon-white");
-        $(elem).addClass("selected");
-        $(elem).attr("data-original-title", "Jefe/a de familia");
-        $(elem).tooltip("show");
-        this.table.find('tbody tr[data-index=' + index + '] .educationCell i').show();
-        this.family[index].head = true;
-        this._headIndex = index;
+        this.family[index].sex = newSex;
     },
 
     setSpouse: function(index, elem) {
@@ -274,7 +263,14 @@ var Model = Class.extend({
 
             // index, head and spouce cell
             var indexCell = $('<td class="indexCell"></td>');
-            indexCell.append($('<span class="index">' + (i+1) + '</span>'));
+            var indexElem = i == 0 ?
+                $('<i class="icon-user"></i>') :
+                $('<span class="index">' + (i+1) + '</span>');
+
+            if (i==0) {
+                self._addTooltip(indexCell, "Jefe/a de familia");
+            }
+            indexCell.append(indexElem);
             row.append(indexCell);
 
             // age
@@ -370,82 +366,74 @@ var Model = Class.extend({
                 educationCell.find("i").hide();
             }
 
-
             row.append(educationCell);
-
-
-
 
             // icons
             var iconsCell = $('<td class="iconsCell"></td>');
 
-            // head icon
-            var headIcon = $('<i class="icon-user"></i>');
-            if (!member.head) {
-                headIcon.addClass('icon-white');
-                self._addTooltip(headIcon, "Marcar como jefe/a de familia");
+            // sex icon
+            var sexIcon = member.sex == "male" ?
+                $('<i class="icon-male"></i>') :
+                $('<i class="icon-female"></i>');
+
+            if (sexIcon.attr("class") == "icon-male") {
+                self._addTooltip(sexIcon, "Hombre");
             } else {
-                headIcon.addClass("selected");
-                self._addTooltip(headIcon, "Jefe/a de familia");
+                self._addTooltip(sexIcon, "Mujer");
             }
 
-            headIcon.hover(function() {
-                    $(this).removeClass("icon-white");
-                }, function() {
-                    if (!$(this).hasClass("selected")) {
-                        $(this).addClass("icon-white");
-                    }
-                }
-            );
-            headIcon.click(function() {
+            sexIcon.click(function(e) {
                 var index = $(this).parent().parent().attr("data-index");
-                self.setHead(index, this);
+                self.setSex(index, this);
                 self.update();
             });
+
 
             // spouse icon
-            var spouseIcon = $('<i class="icon-heart"></i>');
-            if (!member.spouse) {
-                spouseIcon.addClass('icon-white');
-                self._addTooltip(spouseIcon, "Marcar como cónyuge");
-            } else {
-                spouseIcon.addClass("selected");
-                self._addTooltip(spouseIcon, "Cónyugue")
-            }
-            spouseIcon.hover(function() {
-                    $(this).removeClass("icon-white");
-                }, function() {
-                    if (!$(this).hasClass("selected")) {
-                        $(this).addClass("icon-white");
-                    }
+            if (i > 0) {
+                var spouseIcon = $('<i class="icon-heart"></i>');
+                if (!member.spouse) {
+                    spouseIcon.addClass('icon-white');
+                    self._addTooltip(spouseIcon, "Marcar como cónyuge");
+                } else {
+                    spouseIcon.addClass("selected");
+                    self._addTooltip(spouseIcon, "Cónyugue")
                 }
-            );
-            spouseIcon.click(function() {
-                var index = $(this).parent().parent().attr("data-index");
-                self.setSpouse(index, this);
-                self.update();
-            });
+                spouseIcon.hover(function() {
+                        $(this).removeClass("icon-white");
+                    }, function() {
+                        if (!$(this).hasClass("selected")) {
+                            $(this).addClass("icon-white");
+                        }
+                    }
+                );
+                spouseIcon.click(function() {
+                    var index = $(this).parent().parent().attr("data-index");
+                    self.setSpouse(index, this);
+                    self.update();
+                });
 
-            // delete link
-            var deleteLink = $('<a class="deleteMember" href="#"></a>');
-            var deleteIcon = $('<i class="icon-minus-sign"></i>');
-            self._addTooltip(deleteIcon, "Eliminar miembro");
-            deleteLink.append(deleteIcon);
-            deleteLink.append(deleteIcon);
+                // delete link
+                var deleteLink = $('<a class="deleteMember" href="#"></a>');
+                var deleteIcon = $('<i class="icon-minus-sign"></i>');
+                self._addTooltip(deleteIcon, "Eliminar miembro");
+                deleteLink.append(deleteIcon);
+                deleteLink.append(deleteIcon);
 
-            deleteLink.click(function() {
-                var index = $(this).parent().parent().attr("data-index");
-                var icon = $(this).find("i");
-                $(icon).tooltip("hide");
-                self.deleteMember(index);
-            });
+                deleteLink.click(function() {
+                    var index = $(this).parent().parent().attr("data-index");
+                    var icon = $(this).find("i");
+                    $(icon).tooltip("hide");
+                    self.deleteMember(index);
+                });
+            }
 
             row.hover(
                 function() { $(this).find(".deleteMember").show() },
                 function() { $(this).find(".deleteMember").hide() }
             )
 
-            iconsCell.append(headIcon);
+            iconsCell.append(sexIcon);
             iconsCell.append(spouseIcon);
             iconsCell.append(deleteLink);
             row.append(iconsCell);
@@ -521,7 +509,7 @@ var Model = Class.extend({
             t.select('.yTick').call(yAxis);
         }
 //        self.svg.append("text")
-//            .attr("transform", "rotate(-90),translate(-300,-40)")
+//            .attr("transform", "translate(300,400)")
 //            .text("Probabilidad de ser propietario o inquilino formal");
 
         // x ticks and labels
