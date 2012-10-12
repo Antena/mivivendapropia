@@ -498,9 +498,9 @@ var Model = Class.extend({
         var yAxis = d3.svg.axis().scale(self.y).orient('left').tickSize(-self.graphWidth + self.hGraphMargin * 2).tickPadding(10).tickFormat(d3.format('1%'));
 
         var t = null;
-        self.svg = d3.select('#graph').select('svg').select('g');
+        self.svg = d3.select('#plot').select('svg').select('g');
         if (self.svg.empty()) {
-            self.svg = d3.select('#graph')
+            self.svg = d3.select('#plot')
                 .append('svg:svg')
                 .attr('width', self.graphWidth)
                 .attr('height', self.graphHeight)
