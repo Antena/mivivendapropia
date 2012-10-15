@@ -565,6 +565,7 @@ var Model = Class.extend({
                 .attr('y1', 429)
                 .attr('x2', 26)
                 .attr('y2', 0)
+                .attr("id", "incomeLine")
                 .style("stroke", "rgb(6,120,155)")
                 .style("stroke-width", 1);
         }
