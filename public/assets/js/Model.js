@@ -27,6 +27,10 @@ var Model = Class.extend({
         this.randomMin = 40;
         this.randomMax = 85;
 
+        this.familyIncome = 5000;
+        this.equivalentAdultMembers = 4;
+        this.equivalentIncome = 1597.44;
+
         this.quintiles = [
             { label: "Quintil 1" },
             { label: "Quintil 2" },
@@ -161,8 +165,41 @@ var Model = Class.extend({
         this.migrant_li = $("#head .migrant option.migrant_li").attr("selected") == undefined ? 0 : 1;
         this.migrant_pcia = $("#head .migrant option.migrant_pcia").attr("selected") == undefined ? 0 : 1;
 
-        this.show();
+        // family income
+        this.familyIncome = parseInt($('#familyIncome').val());
+        this.equivalentAdultMembers = this._calculateEquivalentAdultMembers();
+        this.equivalentIncome = this.familyIncome/this.equivalentAdultMembers;
+        this.decile = this._getDecile(this.equivalentIncome);
+
         this.updateGraph();
+    },
+
+    _getDecile : function(income) {
+        var decile = 0;
+        for (var i=0; i<incomeDeciles.length; i++) {
+            if (income < incomeDeciles[i].max) {
+                return decile;
+            }
+            decile += 5;
+        }
+
+        return decile + 5;
+    },
+
+    _calculateEquivalentAdultMembers : function() {
+        var equivalentAdultMembers = 0;
+        for (var i=0; i<this.family.length; i++) {
+            var member = this.family[i];
+
+            for (var j=0; j<equivalentIncome.length; j++) {
+                if (member.age >= equivalentIncome[j].min && member.age <= equivalentIncome[j].max) {
+                    equivalentAdultMembers += equivalentIncome[j][member.sex];
+                    break;
+                }
+            }
+        }
+
+        return equivalentAdultMembers;
     },
 
     setEducation: function(index, value) {
@@ -522,6 +559,15 @@ var Model = Class.extend({
             t.select('.xTick').call(xAxis);
         }
 
+        if (!self.incomeLine) {
+            self.incomeLine = self.svg.append('svg:line')
+                .attr('x1', 26)
+                .attr('y1', 429)
+                .attr('x2', 26)
+                .attr('y2', 0)
+                .style("stroke", "rgb(6,120,155)")
+                .style("stroke-width", 1);
+        }
 
         for (var i=0; i<this.lines.length; i++) {
             self._plotData(this.lines[i]);
@@ -710,6 +756,14 @@ var Model = Class.extend({
                     $(this).attr('data-quintile') + ' de ingreso: ' + ($(this).attr('data-value')*100).toFixed(1) + '%';
             }
         });
+
+        // income level line
+        var xCoord = 26 + this.decile/100*(448-26);
+        self.incomeLine.transition()
+            .duration(self.transitionDuration)
+            .attr("x1", xCoord)
+            .attr("x2", xCoord);
+
     },
 
     _generateData : function() {
