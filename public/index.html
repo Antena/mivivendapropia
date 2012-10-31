@@ -64,7 +64,7 @@
         </div>
 
     </div>
-    <div id="info">
+    <div id="info" class="sidebar">
 
         <ul id="myTab" class="nav nav-tabs">
             <li class="active">
@@ -299,6 +299,7 @@
 <script type="text/javascript">
 
     var model = null;
+    var params = null;
 
     $("#addMember").click(function() {
         model.addMember();
@@ -314,6 +315,15 @@
 
 
     $(function() {
+        params = getUrlVars();
+
+        if (params['width'] != undefined && parseInt(params['width']) < 798) {
+            var width = parseInt(params['width']);
+            $("#content").css("width", width);
+            $("#graph").css("float", "none").css("margin", "0 auto");
+            $("#info").removeClass("sidebar").addClass("full-width");
+        }
+
         var family = [
             { age: 45, education: 3, head: true, spouse: false, sex: "male" },
             { age: 40, education: 2, head: false, spouse: true, sex: "female" },
@@ -335,11 +345,25 @@
     });
 
     $(window).load(function() {
-        $('#joyRideTipContent').joyride();
-        $('#help').click(function() {
-            $('#joyRideTipContent').joyride('restart');
-        });
+        if (params['showTour'] == undefined || params['showTour'] != "false") {
+            $('#joyRideTipContent').joyride();
+            $('#help').click(function() {
+                $('#joyRideTipContent').joyride('restart');
+            });
+        } else {
+            $('#help').click(function() {
+                $('#joyRideTipContent').joyride();
+            });
+        }
     });
+
+    function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+            vars[key] = value;
+        });
+        return vars;
+    }
 </script>
 
 </body>
